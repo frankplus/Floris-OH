@@ -1,0 +1,12 @@
+{
+  "subtypes": [
+    {
+      "icon": "$media:layered_image",
+      "id": "florisboard_en_us",
+      "label": "$string:subtype_en",
+      "locale": "en-US",
+      "language": "en",
+      "mode": "lower"
+    }
+  ]
+}

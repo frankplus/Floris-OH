@@ -1,0 +1,391 @@
+{
+  "name": "characters",
+  "rows": [
+    {
+      "keys": [
+        {
+          "code": 113,
+          "label": "q",
+          "kind": "char",
+          "weight": 1,
+          "hint": "1",
+          "popups": [
+            "1"
+          ]
+        },
+        {
+          "code": 119,
+          "label": "w",
+          "kind": "char",
+          "weight": 1,
+          "hint": "2",
+          "popups": [
+            "2"
+          ]
+        },
+        {
+          "code": 101,
+          "label": "e",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "3",
+            "ē",
+            "ê",
+            "é",
+            "è",
+            "ë"
+          ],
+          "hint": "3"
+        },
+        {
+          "code": 114,
+          "label": "r",
+          "kind": "char",
+          "weight": 1,
+          "hint": "4",
+          "popups": [
+            "4"
+          ]
+        },
+        {
+          "code": 116,
+          "label": "t",
+          "kind": "char",
+          "weight": 1,
+          "hint": "5",
+          "popups": [
+            "5"
+          ]
+        },
+        {
+          "code": 121,
+          "label": "y",
+          "kind": "char",
+          "weight": 1,
+          "hint": "6",
+          "popups": [
+            "6"
+          ]
+        },
+        {
+          "code": 117,
+          "label": "u",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "7",
+            "ú",
+            "ū",
+            "ü",
+            "û",
+            "ù"
+          ],
+          "hint": "7"
+        },
+        {
+          "code": 105,
+          "label": "i",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "8",
+            "ì",
+            "ï",
+            "í",
+            "î",
+            "ī"
+          ],
+          "hint": "8"
+        },
+        {
+          "code": 111,
+          "label": "o",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "9",
+            "õ",
+            "ō",
+            "œ",
+            "ø",
+            "ò",
+            "ö",
+            "ó",
+            "ô"
+          ],
+          "hint": "9"
+        },
+        {
+          "code": 112,
+          "label": "p",
+          "kind": "char",
+          "weight": 1,
+          "hint": "0",
+          "popups": [
+            "0"
+          ]
+        }
+      ]
+    },
+    {
+      "keys": [
+        {
+          "kind": "spacer",
+          "weight": 0.5
+        },
+        {
+          "code": 97,
+          "label": "a",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "@",
+            "æ",
+            "ã",
+            "å",
+            "ā",
+            "à",
+            "á",
+            "â",
+            "ä"
+          ],
+          "hint": "@"
+        },
+        {
+          "code": 115,
+          "label": "s",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "#",
+            "ß"
+          ],
+          "hint": "#"
+        },
+        {
+          "code": 100,
+          "label": "d",
+          "kind": "char",
+          "weight": 1,
+          "hint": "$",
+          "popups": [
+            "$"
+          ]
+        },
+        {
+          "code": 102,
+          "label": "f",
+          "kind": "char",
+          "weight": 1,
+          "hint": "%",
+          "popups": [
+            "%"
+          ]
+        },
+        {
+          "code": 103,
+          "label": "g",
+          "kind": "char",
+          "weight": 1,
+          "hint": "&",
+          "popups": [
+            "&"
+          ]
+        },
+        {
+          "code": 104,
+          "label": "h",
+          "kind": "char",
+          "weight": 1,
+          "hint": "-",
+          "popups": [
+            "-"
+          ]
+        },
+        {
+          "code": 106,
+          "label": "j",
+          "kind": "char",
+          "weight": 1,
+          "hint": "+",
+          "popups": [
+            "+"
+          ]
+        },
+        {
+          "code": 107,
+          "label": "k",
+          "kind": "char",
+          "weight": 1,
+          "hint": "(",
+          "popups": [
+            "("
+          ]
+        },
+        {
+          "code": 108,
+          "label": "l",
+          "kind": "char",
+          "weight": 1,
+          "hint": ")",
+          "popups": [
+            ")"
+          ]
+        },
+        {
+          "kind": "spacer",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "keys": [
+        {
+          "code": -11,
+          "label": "shift",
+          "kind": "shift",
+          "weight": 1.5
+        },
+        {
+          "code": 122,
+          "label": "z",
+          "kind": "char",
+          "weight": 1,
+          "hint": "*",
+          "popups": [
+            "*"
+          ]
+        },
+        {
+          "code": 120,
+          "label": "x",
+          "kind": "char",
+          "weight": 1,
+          "hint": "\"",
+          "popups": [
+            "\""
+          ]
+        },
+        {
+          "code": 99,
+          "label": "c",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "'",
+            "ç"
+          ],
+          "hint": "'"
+        },
+        {
+          "code": 118,
+          "label": "v",
+          "kind": "char",
+          "weight": 1,
+          "hint": ":",
+          "popups": [
+            ":"
+          ]
+        },
+        {
+          "code": 98,
+          "label": "b",
+          "kind": "char",
+          "weight": 1,
+          "hint": ";",
+          "popups": [
+            ";"
+          ]
+        },
+        {
+          "code": 110,
+          "label": "n",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "!",
+            "ñ",
+            "ń"
+          ],
+          "hint": "!"
+        },
+        {
+          "code": 109,
+          "label": "m",
+          "kind": "char",
+          "weight": 1,
+          "hint": "?",
+          "popups": [
+            "?"
+          ]
+        },
+        {
+          "code": -7,
+          "label": "delete",
+          "kind": "delete",
+          "weight": 1.5
+        }
+      ]
+    },
+    {
+      "keys": [
+        {
+          "code": -202,
+          "label": "?123",
+          "kind": "view",
+          "weight": 1.5,
+          "target": "symbols"
+        },
+        {
+          "code": 44,
+          "label": ",",
+          "kind": "char",
+          "weight": 1
+        },
+        {
+          "code": -227,
+          "label": "globe",
+          "kind": "lang",
+          "weight": 1
+        },
+        {
+          "code": 32,
+          "label": "space",
+          "kind": "space",
+          "weight": 4
+        },
+        {
+          "code": 46,
+          "label": ".",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            ",",
+            "&",
+            "%",
+            "+",
+            "\"",
+            "-",
+            ":",
+            "'",
+            "@",
+            ";",
+            "/",
+            "(",
+            ")",
+            "#",
+            "!",
+            "?"
+          ]
+        },
+        {
+          "code": 10,
+          "label": "enter",
+          "kind": "enter",
+          "weight": 1.5
+        }
+      ]
+    }
+  ]
+}

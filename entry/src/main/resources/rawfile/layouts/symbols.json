@@ -1,0 +1,312 @@
+{
+  "name": "symbols",
+  "rows": [
+    {
+      "keys": [
+        {
+          "code": 49,
+          "label": "1",
+          "kind": "char",
+          "weight": 1,
+          "output": "1"
+        },
+        {
+          "code": 50,
+          "label": "2",
+          "kind": "char",
+          "weight": 1,
+          "output": "2"
+        },
+        {
+          "code": 51,
+          "label": "3",
+          "kind": "char",
+          "weight": 1,
+          "output": "3"
+        },
+        {
+          "code": 52,
+          "label": "4",
+          "kind": "char",
+          "weight": 1,
+          "output": "4"
+        },
+        {
+          "code": 53,
+          "label": "5",
+          "kind": "char",
+          "weight": 1,
+          "output": "5"
+        },
+        {
+          "code": 54,
+          "label": "6",
+          "kind": "char",
+          "weight": 1,
+          "output": "6"
+        },
+        {
+          "code": 55,
+          "label": "7",
+          "kind": "char",
+          "weight": 1,
+          "output": "7"
+        },
+        {
+          "code": 56,
+          "label": "8",
+          "kind": "char",
+          "weight": 1,
+          "output": "8"
+        },
+        {
+          "code": 57,
+          "label": "9",
+          "kind": "char",
+          "weight": 1,
+          "output": "9"
+        },
+        {
+          "code": 48,
+          "label": "0",
+          "kind": "char",
+          "weight": 1,
+          "output": "0"
+        }
+      ]
+    },
+    {
+      "keys": [
+        {
+          "code": 64,
+          "label": "@",
+          "kind": "char",
+          "weight": 1
+        },
+        {
+          "code": 35,
+          "label": "#",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "№"
+          ]
+        },
+        {
+          "code": 36,
+          "label": "$",
+          "output": "$",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "€",
+            "£",
+            "¥",
+            "¢",
+            "₩"
+          ]
+        },
+        {
+          "code": 37,
+          "label": "%",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "‰",
+            "℅"
+          ]
+        },
+        {
+          "code": 38,
+          "label": "&",
+          "kind": "char",
+          "weight": 1
+        },
+        {
+          "code": 45,
+          "label": "-",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "_",
+            "⁻",
+            "—",
+            "–",
+            "·"
+          ]
+        },
+        {
+          "code": 43,
+          "label": "+",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "±",
+            "⁺"
+          ]
+        },
+        {
+          "code": 40,
+          "label": "(",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "<",
+            "[",
+            "{"
+          ]
+        },
+        {
+          "code": 41,
+          "label": ")",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            ">",
+            "]",
+            "}"
+          ]
+        },
+        {
+          "code": 47,
+          "label": "/",
+          "kind": "char",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "keys": [
+        {
+          "code": -203,
+          "label": "=\\<",
+          "kind": "view",
+          "weight": 1.5,
+          "target": "symbols2"
+        },
+        {
+          "code": 42,
+          "label": "*",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "†",
+            "★",
+            "‡"
+          ]
+        },
+        {
+          "code": 34,
+          "label": "\"",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "”",
+            "„",
+            "“",
+            "«",
+            "»"
+          ]
+        },
+        {
+          "code": 39,
+          "label": "'",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "’",
+            "‚",
+            "‘",
+            "‹",
+            "›"
+          ]
+        },
+        {
+          "code": 58,
+          "label": ":",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "⋮"
+          ]
+        },
+        {
+          "code": 59,
+          "label": ";",
+          "kind": "char",
+          "weight": 1
+        },
+        {
+          "code": 33,
+          "label": "!",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "¡"
+          ]
+        },
+        {
+          "code": 63,
+          "label": "?",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "¿",
+            "‽"
+          ]
+        },
+        {
+          "code": -7,
+          "label": "delete",
+          "kind": "delete",
+          "weight": 1.5
+        }
+      ]
+    },
+    {
+      "keys": [
+        {
+          "code": -201,
+          "label": "ABC",
+          "kind": "view",
+          "weight": 1.5,
+          "target": "characters"
+        },
+        {
+          "code": 44,
+          "label": ",",
+          "kind": "char",
+          "weight": 1
+        },
+        {
+          "code": -205,
+          "label": "123",
+          "kind": "view",
+          "weight": 1.5,
+          "target": "numeric"
+        },
+        {
+          "code": 32,
+          "label": "space",
+          "kind": "space",
+          "weight": 3.5
+        },
+        {
+          "code": 46,
+          "label": ".",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "…"
+          ]
+        },
+        {
+          "code": 10,
+          "label": "enter",
+          "kind": "enter",
+          "weight": 1.5
+        }
+      ]
+    }
+  ]
+}

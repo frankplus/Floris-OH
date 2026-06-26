@@ -1,0 +1,28 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "FlorisBoard keyboard module"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "FlorisBoard setup"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "FlorisBoard"
+    },
+    {
+      "name": "ime_label",
+      "value": "FlorisBoard"
+    },
+    {
+      "name": "ime_desc",
+      "value": "FlorisBoard — open-source keyboard"
+    },
+    {
+      "name": "subtype_en",
+      "value": "English (US)"
+    }
+  ]
+}
