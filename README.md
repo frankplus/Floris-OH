@@ -25,6 +25,9 @@ theme colors all come from the original project (see `tools/convert-layouts.js`)
 - **Backspace auto-repeat** (hold to repeat), **double-space → ". "**.
 - **Floris Day / Night theme**, following the system light/dark setting.
 - **Per-editor-session reset** (re-shows letters + re-evaluates auto-cap on a new field).
+- **Gesture-dock clearance** — the panel is grown by `Metrics.gestureBarInset` (28 vp)
+  and padded by the same amount at the bottom, so the last key row sits above the
+  system gesture-navigation bar instead of under it.
 - A **host setup screen** to enable/choose the keyboard and test typing.
 
 ## Architecture

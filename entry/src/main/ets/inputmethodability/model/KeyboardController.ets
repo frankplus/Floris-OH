@@ -80,9 +80,12 @@ export class KeyboardController {
   // Size the panel so a weight-1 key is ~square: a row is as tall as a key is
   // wide × Metrics.keyAspect. This keeps keys square on the X23's tall
   // 720×1560 panel instead of stretching them to a fixed screen fraction.
+  // The panel is then grown by the gesture-bar inset: the extra strip is padded
+  // out in KeyboardPage, so the keys keep their size and clear the system
+  // gesture dock instead of hiding under it.
   private panelHeight(): number {
     const dis: display.Display = display.getDefaultDisplaySync();
-    const density: number = (dis.densityPixels !== undefined && dis.densityPixels > 0) ? dis.densityPixels : 2;
+    const density: number = this.density();
     const padPx: number = Metrics.boardPadding * density * 2;
     const keyWidthPx: number = (dis.width - padPx) / 10;       // 10 weight-units per row
     const rowPx: number = keyWidthPx * Metrics.keyAspect;
@@ -90,7 +93,13 @@ export class KeyboardController {
     // Clamp to a sane fraction of the screen as a guard (rotation / odd devices).
     const minH: number = Math.floor(dis.height * 0.16);
     const maxH: number = Math.floor(dis.height * 0.5);
-    return Math.min(maxH, Math.max(minH, raw));
+    const keysH: number = Math.min(maxH, Math.max(minH, raw));
+    return keysH + Math.round(Metrics.gestureBarInset * density);
+  }
+
+  private density(): number {
+    const dis: display.Display = display.getDefaultDisplaySync();
+    return (dis.densityPixels !== undefined && dis.densityPixels > 0) ? dis.densityPixels : 2;
   }
 
   private initPanel(): void {

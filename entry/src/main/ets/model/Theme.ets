@@ -85,4 +85,12 @@ export class Metrics {
   // produces a real gap. Column space is honoured by the rows' layoutWeight.
   // Sized to match the horizontal gap (2 * keyMarginH).
   static readonly rowGap: number = 6;
+  // Bottom strip kept clear of keys for the system gesture-navigation bar.
+  // The IME panel is bottom-anchored and the gesture bar (SCBGestureNavBar) is
+  // drawn ON TOP of it, so without this the bottom key row sits under the dock
+  // and loses its taps to the swipe-up gesture. Measured at 84 px on a
+  // density-3.0 panel (`hidumper -s WindowManagerService -a -a`) => 28 vp.
+  // The panel grows by this much and the keyboard content is padded by it, so
+  // the keys keep their size and simply sit above the bar.
+  static readonly gestureBarInset: number = 28;
 }

@@ -354,7 +354,16 @@ struct KeyboardPage {
       .width('100%')
       .height('100%')
       .backgroundColor(this.theme().keyboardBackground)
-      .padding(Metrics.boardPadding)
+      // The extra bottom padding is the strip the panel was grown by in
+      // KeyboardController — it keeps the bottom key row clear of the system
+      // gesture-navigation bar, which is drawn over the panel. The keyboard
+      // background still fills it, so the bar sits on a plain coloured strip.
+      .padding({
+        left: Metrics.boardPadding,
+        right: Metrics.boardPadding,
+        top: Metrics.boardPadding,
+        bottom: Metrics.boardPadding + Metrics.gestureBarInset,
+      })
 
       if (this.accents.length > 0) {
         this.AccentBar()
