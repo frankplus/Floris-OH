@@ -78,13 +78,14 @@ export class Metrics {
   static readonly keyAspect: number = 1.3;         // row height / key width (incl. inter-row gap)
   static readonly visibleRows: number = 4;         // rows in every layer
   static readonly boardPadding: number = 4;        // keyboard outer padding (vp)
-  static readonly keyMarginH: number = 3;          // half the inter-key (horizontal) gap (per-key L/R)
-  // Inter-row (vertical) gap. Applied as Column `space` between rows — NOT as a
-  // per-key vertical margin: a KeyButton is height('100%'), and a vertical margin
-  // on a 100%-tall box overflows/clips instead of shrinking the tile, so it never
-  // produces a real gap. Column space is honoured by the rows' layoutWeight.
-  // Sized to match the horizontal gap (2 * keyMarginH).
-  static readonly rowGap: number = 6;
+  // The gaps between keys are drawn by padding *inside* each key's touch target,
+  // never by margins or Column spacing between them. A gap that sits outside the
+  // components belongs to no key, and a tap landing there is silently swallowed:
+  // with a 6 vp gap on both axes that was 27% of the keyboard's surface, which is
+  // what made fast, less precise typing lose letters. So every key owns its full
+  // pitch and merely paints a smaller tile inside it.
+  static readonly keyMarginH: number = 3;          // half the inter-key (horizontal) gap
+  static readonly rowGapHalf: number = 3;          // half the inter-row (vertical) gap
   // Bottom strip kept clear of keys for the system gesture-navigation bar.
   // The IME panel is bottom-anchored and the gesture bar (SCBGestureNavBar) is
   // drawn ON TOP of it, so without this the bottom key row sits under the dock

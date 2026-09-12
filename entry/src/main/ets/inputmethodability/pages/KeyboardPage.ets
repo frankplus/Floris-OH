@@ -65,7 +65,7 @@ struct KeyboardPage {
   onNewSession(): void {
     this.mode = KeyboardMode.CHARACTERS;
     this.shift = ShiftState.UNSHIFTED;
-    this.accents = [];
+    this.clearAccents();
     this.lastShiftTap = 0;
     this.lastSpaceTap = 0;
     this.evalAutoCap();
@@ -111,8 +111,16 @@ struct KeyboardPage {
     this.shift = (atStart || afterSentence) ? ShiftState.SHIFTED_AUTOMATIC : ShiftState.UNSHIFTED;
   }
 
+  private clearAccents(): void {
+    // Only when there is something to clear: assigning a fresh [] would dirty
+    // the @State on every keystroke and rebuild the whole board for nothing.
+    if (this.accents.length > 0) {
+      this.accents = [];
+    }
+  }
+
   private commitChar(text: string): void {
-    this.accents = [];
+    this.clearAccents();
     this.handler().insert(text);
     this.resetShiftAfterChar();
   }
@@ -122,7 +130,7 @@ struct KeyboardPage {
   }
 
   private onAction(key: KeyDef): void {
-    this.accents = [];
+    this.clearAccents();
     switch (key.kind) {
       case 'shift':
         this.handleShift();
@@ -207,6 +215,32 @@ struct KeyboardPage {
   }
 
   // ---- per-key view computations ----
+
+  // The key a column acts as. Filler columns ('spacer') carry no key of their
+  // own; they hand their area to the nearest real key in the row so the row's
+  // inset edges stay typable.
+  private actsAs(row: RowDef, idx: number): KeyDef {
+    const k: KeyDef = row.keys[idx];
+    if (k.kind !== 'spacer') {
+      return k;
+    }
+    for (let i = idx + 1; i < row.keys.length; i++) {
+      if (row.keys[i].kind !== 'spacer') {
+        return row.keys[i];
+      }
+    }
+    for (let i = idx - 1; i >= 0; i--) {
+      if (row.keys[i].kind !== 'spacer') {
+        return row.keys[i];
+      }
+    }
+    return k;
+  }
+
+  private popupsOf(row: RowDef, idx: number): string[] {
+    const p: string[] | undefined = this.actsAs(row, idx).popups;
+    return p !== undefined ? p : [];
+  }
 
   private displayLabel(key: KeyDef): string {
     switch (key.kind) {
@@ -323,25 +357,31 @@ struct KeyboardPage {
 
   build() {
     Stack({ alignContent: Alignment.TopStart }) {
-      Column({ space: Metrics.rowGap }) {
+      // No spacing between rows: the gap is padding inside each key's touch
+      // target, so no strip of the board belongs to nothing (see Metrics).
+      Column() {
         ForEach(this.layout().rows, (row: RowDef, r: number) => {
           Row() {
             ForEach(row.keys, (key: KeyDef, c: number) => {
+              // The key this column types: itself, or, for the layout's filler
+              // columns, the key it sits next to — so a row's inset edges extend
+              // that key instead of eating the tap.
               KeyButton({
-                label: this.displayLabel(key),
-                commitText: this.commitTextFor(key),
-                bg: this.keyBg(key),
-                fg: this.keyFg(key),
-                pressedBg: this.keyPressedBg(key),
-                fontSize: this.keyFontSize(key),
+                ghost: key.kind === 'spacer',
+                label: this.displayLabel(this.actsAs(row, c)),
+                commitText: this.commitTextFor(this.actsAs(row, c)),
+                bg: this.keyBg(this.actsAs(row, c)),
+                fg: this.keyFg(this.actsAs(row, c)),
+                pressedBg: this.keyPressedBg(this.actsAs(row, c)),
+                fontSize: this.keyFontSize(this.actsAs(row, c)),
                 weight: key.weight,
-                kind: key.kind,
-                hasPopups: key.popups !== undefined && key.popups.length > 0,
-                popups: key.popups !== undefined ? key.popups : [],
+                kind: this.actsAs(row, c).kind,
+                hasPopups: this.popupsOf(row, c).length > 0,
+                popups: this.popupsOf(row, c),
                 hint: key.hint !== undefined ? key.hint : '',
                 hintColor: this.theme().hintForeground,
                 onCommit: (text: string) => this.onCommit(text),
-                onAction: () => this.onAction(key),
+                onAction: () => this.onAction(this.actsAs(row, c)),
                 onDeleteRepeat: () => this.onDeleteRepeat(),
                 onShowAccents: (p: string[]) => this.onShowAccents(p),
               })
@@ -354,15 +394,18 @@ struct KeyboardPage {
       .width('100%')
       .height('100%')
       .backgroundColor(this.theme().keyboardBackground)
-      // The extra bottom padding is the strip the panel was grown by in
+      // The bottom padding is the strip the panel was grown by in
       // KeyboardController — it keeps the bottom key row clear of the system
       // gesture-navigation bar, which is drawn over the panel. The keyboard
       // background still fills it, so the bar sits on a plain coloured strip.
+      // It is the gesture inset alone, with no boardPadding added: the gesture
+      // bar's window starts exactly where the inset does, so anything on top of
+      // it would only be one more strip that belongs to no key.
       .padding({
         left: Metrics.boardPadding,
         right: Metrics.boardPadding,
         top: Metrics.boardPadding,
-        bottom: Metrics.boardPadding + Metrics.gestureBarInset,
+        bottom: Metrics.gestureBarInset,
       })
 
       if (this.accents.length > 0) {

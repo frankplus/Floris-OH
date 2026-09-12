@@ -11,6 +11,7 @@ import { InputHandler } from './InputHandler';
 import { Metrics } from '../../model/Theme';
 
 const ime: inputMethodEngine.InputMethodAbility = inputMethodEngine.getInputMethodAbility();
+const delegate: inputMethodEngine.KeyboardDelegate = inputMethodEngine.getKeyboardDelegate();
 
 export class KeyboardController {
   private context: InputMethodExtensionContext | undefined = undefined;
@@ -30,6 +31,12 @@ export class KeyboardController {
   private onDisplayChange: (id: number) => void = (id: number) => {
     this.resizePanel();
   };
+  // The caret moved for a reason other than our own editing (the user tapped
+  // into the text), so InputHandler's shadow of the cursor context is stale.
+  private onSelectionChange: (ob: number, oe: number, nb: number, ne: number) => void =
+    (ob: number, oe: number, nb: number, ne: number) => {
+      InputHandler.getInstance().onCaretMoved();
+    };
 
   onCreate(context: InputMethodExtensionContext): void {
     this.context = context;
@@ -57,6 +64,12 @@ export class KeyboardController {
     ime.on('inputStart', this.onInputStart);
     ime.on('inputStop', this.onInputStop);
     try {
+      delegate.on('selectionChange', this.onSelectionChange);
+    } catch (e) {
+      const err = e as BusinessError;
+      console.error(`FlorisIME selectionChange subscribe failed: ${err.code} ${err.message}`);
+    }
+    try {
       display.on('change', this.onDisplayChange);
     } catch (e) {
       const err = e as BusinessError;
@@ -69,6 +82,7 @@ export class KeyboardController {
     try {
       ime.off('inputStart', this.onInputStart);
       ime.off('inputStop', this.onInputStop);
+      delegate.off('selectionChange', this.onSelectionChange);
       display.off('change', this.onDisplayChange);
     } catch (e) {
       const err = e as BusinessError;
