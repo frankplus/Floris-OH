@@ -5,17 +5,11 @@
     "description": "$string:module_desc",
     "mainElement": "EntryAbility",
     "deviceTypes": [
-      "default",
-      "tablet"
+      "default"
     ],
     "deliveryWithInstall": true,
     "installationFree": false,
     "pages": "$profile:main_pages",
-    "requestPermissions": [
-      {
-        "name": "ohos.permission.VIBRATE"
-      }
-    ],
     "abilities": [
       {
         "name": "EntryAbility",
@@ -65,6 +59,11 @@
             "resource": "$profile:input_method_config"
           }
         ]
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.VIBRATE"
       }
     ]
   }

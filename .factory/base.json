@@ -1,0 +1,35 @@
+{
+  "base": "/home/francesco/Desktop/oniro/ohos-app-factory/.claude/worktrees/florisboard-continuation/bench/porting/src/floris-oh",
+  "copied": [
+    "entry/src/main/ets/components/KeyButton.ets",
+    "entry/src/main/ets/inputmethodability/InputMethodService.ets",
+    "entry/src/main/ets/inputmethodability/model/InputHandler.ets",
+    "entry/src/main/ets/inputmethodability/model/KeyboardController.ets",
+    "entry/src/main/ets/inputmethodability/pages/KeyboardPage.ets",
+    "entry/src/main/ets/model/KeyModels.ets",
+    "entry/src/main/ets/model/LayoutStore.ets",
+    "entry/src/main/ets/model/Theme.ets",
+    "entry/src/main/resources/base/profile/input_method_config.json",
+    "entry/src/main/resources/rawfile/layouts/characters.json",
+    "entry/src/main/resources/rawfile/layouts/numeric.json",
+    "entry/src/main/resources/rawfile/layouts/symbols.json",
+    "entry/src/main/resources/rawfile/layouts/symbols2.json"
+  ],
+  "merged": [
+    "entry/src/main/module.json5",
+    "entry/src/main/resources/base/element/color.json",
+    "entry/src/main/resources/base/element/string.json",
+    "entry/src/main/resources/base/profile/main_pages.json",
+    "entry/src/main/resources/dark/element/color.json"
+  ],
+  "displaced": [
+    "entry/src/main/ets/entryability/EntryAbility.ets",
+    "entry/src/main/ets/pages/Index.ets",
+    "entry/src/main/resources/base/media/background.png",
+    "entry/src/main/resources/base/media/foreground.png",
+    "entry/src/main/resources/base/media/startIcon.png",
+    "entry/src/ohosTest/ets/test/List.test.ets",
+    "entry/src/ohosTest/module.json5"
+  ],
+  "warnings": []
+}

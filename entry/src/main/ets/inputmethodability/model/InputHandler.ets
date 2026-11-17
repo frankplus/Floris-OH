@@ -25,6 +25,7 @@
  */
 import inputMethodEngine from '@ohos.inputMethodEngine';
 import { BusinessError } from '@ohos.base';
+import { reloadSettingsAndBump } from './SettingsBridge';
 
 const TAIL_LEN: number = 8;     // characters of cursor context to shadow
 const SEED_IDLE: number = 150;  // ms of no editing before trusting a re-read
@@ -126,6 +127,9 @@ export class InputHandler {
     this.seedTail(true);   // nothing of ours is in flight on a fresh binding
     this.session += 1;
     AppStorage.setOrCreate('imeSession', this.session);
+    // The app may have changed a setting since the panel last showed;
+    // re-read the shared Preferences file and let the panel re-apply it.
+    reloadSettingsAndBump().catch(() => {});
   }
 
   onInputStop(): void {

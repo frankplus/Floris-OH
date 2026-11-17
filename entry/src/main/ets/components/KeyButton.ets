@@ -30,6 +30,7 @@
  */
 import vibrator from '@ohos.vibrator';
 import { Metrics } from '../model/Theme';
+import { KeyboardSettingsLogic } from '../inputmethodability/model/KeyboardSettingsLogic';
 
 const REPEAT_START_DELAY: number = 320;   // ms hold before delete repeat begins
 const REPEAT_INTERVAL_MAX: number = 75;   // first repeat gap (ms)
@@ -61,18 +62,26 @@ class FingerState {
 export struct KeyButton {
   @Prop label: string;
   @Prop commitText: string;
-  @Prop bg: string;
-  @Prop fg: string;
-  @Prop pressedBg: string;
+  @Prop bg: ResourceColor;
+  @Prop fg: ResourceColor;
+  @Prop pressedBg: ResourceColor;
   @Prop fontSize: number;
   @Prop weight: number;
   @Prop kind: string;
   @Prop hasPopups: boolean;
   @Prop hint: string;
-  @Prop hintColor: string;
+  @Prop hintColor: ResourceColor;
+  @Prop hintFontSize: number;
   // A ghost key is invisible but still typed: it lets the layout's filler
   // columns act as an extension of the key beside them instead of a dead strip.
   @Prop ghost: boolean;
+  // The id this key's outer (touch-target) node carries; '' for ghost columns.
+  @Prop keyId: string;
+  // The id of the corner hint Text, '' when there is no hint.
+  @Prop hintId: string;
+  // Haptic feedback preferences, applied on every press (Settings/Sounds & Vibration).
+  @Prop hapticEnabled: boolean;
+  @Prop hapticDurationMs: number;
   // Plain (non-reactive) members supplied at construction. Action closures
   // already capture the specific key in the parent, so the child never needs
   // to carry the key model itself (avoids stale plain-member object props).
@@ -86,11 +95,19 @@ export struct KeyButton {
   private fingers: FingerState[] = [];
 
   private tick(): void {
+    const ms: number = KeyboardSettingsLogic.vibrationMs(this.hapticEnabled, this.hapticDurationMs);
+    if (ms <= 0) {
+      return;
+    }
+    // Haptics are best-effort: an unhandled rejection or a synchronous throw
+    // would be fatal to the input method, so both are logged and dropped.
     try {
-      vibrator.startVibration({ type: 'time', duration: 16 }, { usage: 'physicalFeedback' })
-        .catch(() => {});   // haptics are best-effort; an unhandled rejection would be fatal
+      vibrator.startVibration({ type: 'time', duration: ms }, { usage: 'physicalFeedback' })
+        .catch((err: Error) => {
+          console.error(`FlorisIME vibration failed: ${JSON.stringify(err)}`);
+        });
     } catch (e) {
-      // ditto for a synchronous throw
+      console.error(`FlorisIME vibration threw: ${JSON.stringify(e)}`);
     }
   }
 
@@ -223,7 +240,8 @@ export struct KeyButton {
 
         if (this.kind !== 'spacer' && !this.ghost && this.hint.length > 0) {
           Text(this.hint)
-            .fontSize(Metrics.hintFontSize)
+            .id(this.hintId)
+            .fontSize(this.hintFontSize)
             .fontColor(this.hintColor)
             .maxLines(1)
             .padding({ right: 5, top: 3 })
@@ -237,10 +255,11 @@ export struct KeyButton {
         : (this.pressed ? this.pressedBg : this.bg))
       .shadow(this.kind === 'spacer' || this.ghost
         ? undefined
-        : { radius: 3, color: '#26000000', offsetX: 0, offsetY: 1 })
+        : { radius: 3, color: $r('app.color.floris_key_shadow'), offsetX: 0, offsetY: 1 })
     }
     .layoutWeight(this.weight)
     .height('100%')
+    .id(this.keyId)
     .padding({
       left: Metrics.keyMarginH,
       right: Metrics.keyMarginH,

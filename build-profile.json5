@@ -4,8 +4,8 @@
       {
         "name": "default",
         "signingConfig": "default",
-        "compileSdkVersion": 20,
-        "compatibleSdkVersion": 20,
+        "compileSdkVersion": 23,
+        "compatibleSdkVersion": 23,
         "runtimeOS": "OpenHarmony"
       }
     ],
@@ -22,9 +22,9 @@
         "name": "default",
         "material": {
           "certpath": "./signatures/OpenHarmonyProfileRelease.pem",
-          "storePassword": "00000016237687ffb1e2de7a6c2dff53b4861b3c6193eddcfca2c6e0d111436a7b1cb24c9d69",
+          "storePassword": "000000162ef6ac6fb59f7c7e33d69a46e6a9f9e0084f7c10bf5e89803ced4aab1f4f9bd07eab",
           "keyAlias": "openharmony application profile release",
-          "keyPassword": "0000001649a9ee6f8ed3ee7ef459d942ee2d8921bba82910dccd1c5d9cb6458ad2293d87d518",
+          "keyPassword": "00000016c15b8c04c2d109ea11e91d1a0b33488a89a76be618d749ceb71bdc68aaba203bc0ac",
           "profile": "./signatures/app1-profile.p7b",
           "signAlg": "SHA256withECDSA",
           "storeFile": "./signatures/OpenHarmony.p12"

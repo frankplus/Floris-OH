@@ -9,59 +9,61 @@
  */
 
 export interface ThemeColors {
-  keyboardBackground: string;     // --background
-  keyBackground: string;          // --surface  (all keys)
-  keyForeground: string;          // --on-surface
-  keyPressedBackground: string;   // --surface-variant
-  specialKeyBackground: string;   // shift / delete / view switchers — same surface
-  specialKeyForeground: string;   // --on-surface
-  enterKeyBackground: string;     // --primary
-  enterKeyPressed: string;        // --primary-variant
-  enterKeyForeground: string;     // --on-primary
-  secondary: string;              // --secondary (caps-lock shift glyph)
-  popupBackground: string;        // --popup-surface
-  popupForeground: string;        // --on-surface
-  popupSelectedBackground: string;// --focused-popup-surface
-  spaceForeground: string;        // --on-surface-variant (space label)
-  hintForeground: string;         // --on-surface-variant (corner number/symbol hint)
+  keyboardBackground: Resource;     // --background
+  keyBackground: Resource;          // --surface  (all keys)
+  keyForeground: Resource;          // --on-surface
+  keyPressedBackground: Resource;   // --surface-variant
+  specialKeyBackground: Resource;   // shift / delete / view switchers — same surface
+  specialKeyForeground: Resource;   // --on-surface
+  enterKeyBackground: Resource;     // --primary
+  enterKeyPressed: Resource;        // --primary-variant
+  enterKeyForeground: Resource;     // --on-primary
+  secondary: Resource;              // --secondary (caps-lock shift glyph)
+  popupBackground: Resource;        // --popup-surface
+  popupForeground: Resource;        // --on-surface
+  popupSelectedBackground: Resource;// --focused-popup-surface
+  spaceForeground: Resource;        // --on-surface-variant (space label)
+  hintForeground: Resource;         // --on-surface-variant (corner number/symbol hint)
 }
 
-// Floris Day (light).
+// Floris Day (light). Explicit, not tied to the system's light/dark resource
+// switching: the mode is chosen in KeyboardPage.theme() from the setting, so
+// the same colours are defined once and used regardless of the device's mode.
 export const FlorisLight: ThemeColors = {
-  keyboardBackground: '#e0e0e0',
-  keyBackground: '#ffffff',
-  keyForeground: '#000000',
-  keyPressedBackground: '#f5f5f5',
-  specialKeyBackground: '#ffffff',
-  specialKeyForeground: '#000000',
-  enterKeyBackground: '#4caf50',
-  enterKeyPressed: '#388e3c',
-  enterKeyForeground: '#f0f0f0',
-  secondary: '#ff9800',
-  popupBackground: '#eeeeee',
-  popupForeground: '#000000',
-  popupSelectedBackground: '#bdbdbd',
-  spaceForeground: '#5f5f5f',
-  hintForeground: '#5f5f5f',
+  keyboardBackground: $r('app.color.floris_light_keyboard_background'),
+  keyBackground: $r('app.color.floris_light_key_background'),
+  keyForeground: $r('app.color.floris_light_key_foreground'),
+  keyPressedBackground: $r('app.color.floris_light_key_pressed_background'),
+  specialKeyBackground: $r('app.color.floris_light_special_key_background'),
+  specialKeyForeground: $r('app.color.floris_light_special_key_foreground'),
+  enterKeyBackground: $r('app.color.floris_light_enter_key_background'),
+  enterKeyPressed: $r('app.color.floris_light_enter_key_pressed'),
+  enterKeyForeground: $r('app.color.floris_light_enter_key_foreground'),
+  secondary: $r('app.color.floris_light_secondary'),
+  popupBackground: $r('app.color.floris_light_popup_background'),
+  popupForeground: $r('app.color.floris_light_popup_foreground'),
+  popupSelectedBackground: $r('app.color.floris_light_popup_selected_background'),
+  spaceForeground: $r('app.color.floris_light_space_foreground'),
+  hintForeground: $r('app.color.floris_light_hint_foreground'),
 };
 
 // Floris Night (dark).
 export const FlorisDark: ThemeColors = {
-  keyboardBackground: '#212121',
-  keyBackground: '#424242',
-  keyForeground: '#ffffff',
-  keyPressedBackground: '#616161',
-  specialKeyBackground: '#424242',
-  specialKeyForeground: '#ffffff',
-  enterKeyBackground: '#4caf50',
-  enterKeyPressed: '#388e3c',
-  enterKeyForeground: '#f0f0f0',
-  secondary: '#f57c00',
-  popupBackground: '#757575',
-  popupForeground: '#ffffff',
-  popupSelectedBackground: '#bdbdbd',
-  spaceForeground: '#a0a0a0',
-  hintForeground: '#a0a0a0',
+  keyboardBackground: $r('app.color.floris_night_keyboard_background'),
+  keyBackground: $r('app.color.floris_night_key_background'),
+  keyForeground: $r('app.color.floris_night_key_foreground'),
+  keyPressedBackground: $r('app.color.floris_night_key_pressed_background'),
+  specialKeyBackground: $r('app.color.floris_night_special_key_background'),
+  specialKeyForeground: $r('app.color.floris_night_special_key_foreground'),
+  enterKeyBackground: $r('app.color.floris_night_enter_key_background'),
+  enterKeyPressed: $r('app.color.floris_night_enter_key_pressed'),
+  enterKeyForeground: $r('app.color.floris_night_enter_key_foreground'),
+  secondary: $r('app.color.floris_night_secondary'),
+  popupBackground: $r('app.color.floris_night_popup_background'),
+  popupForeground: $r('app.color.floris_night_popup_foreground'),
+  popupSelectedBackground: $r('app.color.floris_night_popup_selected_background'),
+  spaceForeground: $r('app.color.floris_night_space_foreground'),
+  hintForeground: $r('app.color.floris_night_hint_foreground'),
 };
 
 // Geometry (FlorisBoard FlorisImeSizing / Snygg defines; dp→vp, sp→fp).

@@ -3,6 +3,150 @@
     {
       "name": "start_window_background",
       "value": "#FFFFFF"
+    },
+    {
+      "name": "brand",
+      "value": "#439A46"
+    },
+    {
+      "name": "on_brand",
+      "value": "#1A1A1A"
+    },
+    {
+      "name": "brand_soft",
+      "value": "#1F439A46"
+    },
+    {
+      "name": "home_warning_bg",
+      "value": "#FFF3E0"
+    },
+    {
+      "name": "home_warning_text",
+      "value": "#E65100"
+    },
+    {
+      "name": "floris_key_shadow",
+      "value": "#26000000"
+    },
+    {
+      "name": "floris_light_keyboard_background",
+      "value": "#e0e0e0"
+    },
+    {
+      "name": "floris_light_key_background",
+      "value": "#ffffff"
+    },
+    {
+      "name": "floris_light_key_foreground",
+      "value": "#000000"
+    },
+    {
+      "name": "floris_light_key_pressed_background",
+      "value": "#f5f5f5"
+    },
+    {
+      "name": "floris_light_special_key_background",
+      "value": "#ffffff"
+    },
+    {
+      "name": "floris_light_special_key_foreground",
+      "value": "#000000"
+    },
+    {
+      "name": "floris_light_enter_key_background",
+      "value": "#4caf50"
+    },
+    {
+      "name": "floris_light_enter_key_pressed",
+      "value": "#388e3c"
+    },
+    {
+      "name": "floris_light_enter_key_foreground",
+      "value": "#f0f0f0"
+    },
+    {
+      "name": "floris_light_secondary",
+      "value": "#ff9800"
+    },
+    {
+      "name": "floris_light_popup_background",
+      "value": "#eeeeee"
+    },
+    {
+      "name": "floris_light_popup_foreground",
+      "value": "#000000"
+    },
+    {
+      "name": "floris_light_popup_selected_background",
+      "value": "#bdbdbd"
+    },
+    {
+      "name": "floris_light_space_foreground",
+      "value": "#5f5f5f"
+    },
+    {
+      "name": "floris_light_hint_foreground",
+      "value": "#5f5f5f"
+    },
+    {
+      "name": "floris_night_keyboard_background",
+      "value": "#212121"
+    },
+    {
+      "name": "floris_night_key_background",
+      "value": "#424242"
+    },
+    {
+      "name": "floris_night_key_foreground",
+      "value": "#ffffff"
+    },
+    {
+      "name": "floris_night_key_pressed_background",
+      "value": "#616161"
+    },
+    {
+      "name": "floris_night_special_key_background",
+      "value": "#424242"
+    },
+    {
+      "name": "floris_night_special_key_foreground",
+      "value": "#ffffff"
+    },
+    {
+      "name": "floris_night_enter_key_background",
+      "value": "#4caf50"
+    },
+    {
+      "name": "floris_night_enter_key_pressed",
+      "value": "#388e3c"
+    },
+    {
+      "name": "floris_night_enter_key_foreground",
+      "value": "#f0f0f0"
+    },
+    {
+      "name": "floris_night_secondary",
+      "value": "#f57c00"
+    },
+    {
+      "name": "floris_night_popup_background",
+      "value": "#757575"
+    },
+    {
+      "name": "floris_night_popup_foreground",
+      "value": "#ffffff"
+    },
+    {
+      "name": "floris_night_popup_selected_background",
+      "value": "#bdbdbd"
+    },
+    {
+      "name": "floris_night_space_foreground",
+      "value": "#a0a0a0"
+    },
+    {
+      "name": "floris_night_hint_foreground",
+      "value": "#a0a0a0"
     }
   ]
 }
