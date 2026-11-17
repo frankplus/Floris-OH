@@ -12,3 +12,4 @@ entry/.preview/
 oh-package-lock.json5
 **/oh-package-lock.json5
 local.properties
+signatures/
