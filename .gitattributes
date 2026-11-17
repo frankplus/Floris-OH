@@ -1,0 +1,3 @@
+**/resources/**/element/*.json merge=ohos-json-union
+**/resources/**/profile/main_pages.json merge=ohos-json-union
+**/resources/**/profile/route_map.json merge=ohos-json-union

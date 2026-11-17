@@ -9,6 +9,10 @@ import { display } from '@kit.ArkUI';
 import { BusinessError } from '@ohos.base';
 import { InputHandler } from './InputHandler';
 import { Metrics } from '../../model/Theme';
+import { SettingsStore } from '../../model/SettingsStore';
+import { KeyboardPrefs } from '../../model/KeyboardPrefs';
+import { reloadSettingsAndBump } from './SettingsBridge';
+import { KeyboardSettingsLogic } from './KeyboardSettingsLogic';
 
 const ime: inputMethodEngine.InputMethodAbility = inputMethodEngine.getInputMethodAbility();
 const delegate: inputMethodEngine.KeyboardDelegate = inputMethodEngine.getKeyboardDelegate();
@@ -31,6 +35,14 @@ export class KeyboardController {
   private onDisplayChange: (id: number) => void = (id: number) => {
     this.resizePanel();
   };
+  // Re-read the shared settings every time the panel is about to be shown, so
+  // a change made in the app (layout, number row, height...) is already
+  // applied by the time the user sees the keyboard.
+  private onPanelShow: () => void = () => {
+    reloadSettingsAndBump().then(() => {
+      this.resizePanel();
+    }).catch(() => {});
+  };
   // The caret moved for a reason other than our own editing (the user tapped
   // into the text), so InputHandler's shadow of the cursor context is stale.
   private onSelectionChange: (ob: number, oe: number, nb: number, ne: number) => void =
@@ -49,6 +61,7 @@ export class KeyboardController {
     this.destroyed = true;
     this.unregisterListeners();
     if (this.panel !== undefined) {
+      this.panel.off('show', this.onPanelShow);
       ime.destroyPanel(this.panel);
       this.panel = undefined;
     }
@@ -98,12 +111,15 @@ export class KeyboardController {
   // out in KeyboardPage, so the keys keep their size and clear the system
   // gesture dock instead of hiding under it.
   private panelHeight(): number {
+    const prefs: KeyboardPrefs = SettingsStore.getInstance().prefs();
     const dis: display.Display = display.getDefaultDisplaySync();
     const density: number = this.density();
     const padPx: number = Metrics.boardPadding * density * 2;
     const keyWidthPx: number = (dis.width - padPx) / 10;       // 10 weight-units per row
     const rowPx: number = keyWidthPx * Metrics.keyAspect;
-    const raw: number = Math.floor(rowPx * Metrics.visibleRows + padPx);
+    // The number row adds one more row on top of the usual visible rows.
+    const keyRowsPx: number = KeyboardSettingsLogic.keyRowsHeightPx(rowPx, prefs.numberRow, prefs.heightPercent);
+    const raw: number = Math.floor(keyRowsPx + padPx);
     // Clamp to a sane fraction of the screen as a guard (rotation / odd devices).
     const minH: number = Math.floor(dis.height * 0.16);
     const maxH: number = Math.floor(dis.height * 0.5);
@@ -133,6 +149,7 @@ export class KeyboardController {
         return;
       }
       this.panel = panel;
+      panel.on('show', this.onPanelShow);
       panel.resize(width, height).then(() => {
         panel.setUiContent('inputmethodability/pages/KeyboardPage').then(() => {
           console.info('FlorisIME panel ready');

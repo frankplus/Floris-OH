@@ -6,7 +6,8 @@
  * org.florisboard.localization extensions) and assembles flat, ArkTS-friendly
  * layout files for the OpenHarmony port. This is a genuine reuse of FlorisBoard's
  * data: key codes, labels, inline symbol popups, the main↔mod row merge, the
- * English accent popups (en.json) and the currency set all come from upstream.
+ * English accent popups (en.json), the currency set and the number row all come
+ * from upstream.
  *
  * Usage: node tools/convert-layouts.js
  */
@@ -226,7 +227,7 @@ function assemble(name, mainPath, modPath, prependDigits) {
   if (prependDigits) {
     merged.unshift(digitRow()); // FlorisBoard shows a 1234567890 row atop the symbol pages
   }
-  if (name === 'characters') {
+  if (name === 'characters' || name.startsWith('characters_')) {
     applyHints(merged); // number-row + symbol corner hints, only on the letters layer
   }
   const rows = merged.map((keys) => ({ keys: balanceRow(keys) }));
@@ -253,10 +254,26 @@ function assembleNumeric() {
   console.log('  numeric.json: 4 rows (hand-built)');
 }
 
+// The number row (1234567890), FlorisBoard's layouts/numericRow/western_arabic.json: a
+// single row of its ten "default" (unshifted) digit keys with their long-press fraction
+// popups, no mod row merge (there is no number-row mod layout upstream).
+function assembleNumberRow() {
+  const raw = readJson(path.join(LAYOUTS, 'numericRow/western_arabic.json'));
+  const row = raw[0].map(mapKey).filter((k) => k && !k._placeholder);
+  const rows = [{ keys: balanceRow(row) }];
+  const layout = { name: 'number_row', rows };
+  fs.writeFileSync(path.join(OUT, 'number_row.json'), JSON.stringify(layout, null, 2));
+  const keyCount = rows.reduce((s, r) => s + r.keys.length, 0);
+  console.log(`  number_row.json: ${rows.length} rows, ${keyCount} keys`);
+}
+
 fs.mkdirSync(OUT, { recursive: true });
 console.log('Converting FlorisBoard layouts → ' + OUT);
 assemble('characters', path.join(LAYOUTS, 'characters/qwerty.json'), path.join(LAYOUTS, 'charactersMod/default.json'), false);
+assemble('characters_qwertz', path.join(LAYOUTS, 'characters/qwertz.json'), path.join(LAYOUTS, 'charactersMod/default.json'), false);
+assemble('characters_azerty', path.join(LAYOUTS, 'characters/azerty.json'), path.join(LAYOUTS, 'charactersMod/default.json'), false);
 assemble('symbols', path.join(LAYOUTS, 'symbols/western.json'), path.join(LAYOUTS, 'symbolsMod/default.json'), true);
 assemble('symbols2', path.join(LAYOUTS, 'symbols2/western.json'), path.join(LAYOUTS, 'symbols2Mod/default.json'), true);
 assembleNumeric();
+assembleNumberRow();
 console.log('Done.');

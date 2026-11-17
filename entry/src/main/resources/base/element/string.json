@@ -2,15 +2,55 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "FlorisBoard keyboard module"
+      "value": "Continues Floris-OH, the hand-written FlorisBoard input method for OpenHarmony, with FlorisBoard's settings app limited "
     },
     {
       "name": "EntryAbility_desc",
-      "value": "FlorisBoard setup"
+      "value": "Continues Floris-OH, the hand-written FlorisBoard input method for OpenHarmony, with FlorisBoard's settings app limited "
     },
     {
       "name": "EntryAbility_label",
       "value": "FlorisBoard"
+    },
+    {
+      "name": "kit_back",
+      "value": "Back"
+    },
+    {
+      "name": "kit_ok",
+      "value": "OK"
+    },
+    {
+      "name": "kit_cancel",
+      "value": "Cancel"
+    },
+    {
+      "name": "title_Home",
+      "value": "Welcome to FlorisBoard"
+    },
+    {
+      "name": "title_Keyboard",
+      "value": "Keyboard"
+    },
+    {
+      "name": "title_InputFeedback",
+      "value": "Sounds & Vibration"
+    },
+    {
+      "name": "title_Typing",
+      "value": "Typing"
+    },
+    {
+      "name": "title_Theme",
+      "value": "Theme"
+    },
+    {
+      "name": "title_Localization",
+      "value": "Languages & Layouts"
+    },
+    {
+      "name": "title_About",
+      "value": "About"
     },
     {
       "name": "ime_label",
@@ -23,6 +63,254 @@
     {
       "name": "subtype_en",
       "value": "English (US)"
+    },
+    {
+      "name": "settings_store_theme_follow_system",
+      "value": "Follow system"
+    },
+    {
+      "name": "settings_store_theme_always_day",
+      "value": "Always day"
+    },
+    {
+      "name": "settings_store_theme_always_night",
+      "value": "Always night"
+    },
+    {
+      "name": "settings_store_layout_qwerty",
+      "value": "QWERTY"
+    },
+    {
+      "name": "settings_store_layout_qwertz",
+      "value": "QWERTZ"
+    },
+    {
+      "name": "settings_store_layout_azerty",
+      "value": "AZERTY"
+    },
+    {
+      "name": "settings_store_space_bar_qwerty",
+      "value": "English (QWERTY)"
+    },
+    {
+      "name": "settings_store_space_bar_qwertz",
+      "value": "English (QWERTZ)"
+    },
+    {
+      "name": "settings_store_space_bar_azerty",
+      "value": "English (AZERTY)"
+    },
+    {
+      "name": "settings_store_percent_format",
+      "value": "%d%%"
+    },
+    {
+      "name": "settings_store_duration_format",
+      "value": "%d ms"
+    },
+    {
+      "name": "home_choose_keyboard",
+      "value": "Choose keyboard"
+    },
+    {
+      "name": "home_preview_label",
+      "value": "Try it out"
+    },
+    {
+      "name": "home_preview_placeholder",
+      "value": "Tap here and type…"
+    },
+    {
+      "name": "home_ime_checking",
+      "value": "Checking input method status…"
+    },
+    {
+      "name": "home_ime_not_enabled",
+      "value": "FlorisBoard is not enabled in the system and thus won't be available as an input method in the input picker. Click here to resolve this issue."
+    },
+    {
+      "name": "home_ime_not_selected",
+      "value": "FlorisBoard is not selected as the default input method. Click here to resolve this issue."
+    },
+    {
+      "name": "home_ime_enabled_selected",
+      "value": "FlorisBoard is enabled and selected."
+    },
+    {
+      "name": "home_ime_read_error",
+      "value": "Could not read the input method list."
+    },
+    {
+      "name": "keyboard_number_row_title",
+      "value": "Number row"
+    },
+    {
+      "name": "keyboard_number_row_subtitle",
+      "value": "Show a number row above the character layout"
+    },
+    {
+      "name": "keyboard_hinted_symbols_title",
+      "value": "Hinted symbols"
+    },
+    {
+      "name": "keyboard_font_size_title",
+      "value": "Font size"
+    },
+    {
+      "name": "keyboard_height_title",
+      "value": "Keyboard height"
+    },
+    {
+      "name": "group_layout",
+      "value": "Layout"
+    },
+    {
+      "name": "group_key_press",
+      "value": "Key press"
+    },
+    {
+      "name": "keyboard_save_failed",
+      "value": "Couldn't save setting."
+    },
+    {
+      "name": "input_feedback__group_haptic",
+      "value": "Haptic feedback / Vibration"
+    },
+    {
+      "name": "input_feedback__haptic_enabled_title",
+      "value": "Enable haptic feedback"
+    },
+    {
+      "name": "input_feedback__haptic_enabled_summary_disabled",
+      "value": "Never vibrate for input events, regardless of system settings"
+    },
+    {
+      "name": "input_feedback__haptic_duration_title",
+      "value": "Vibration duration"
+    },
+    {
+      "name": "input_feedback__save_error",
+      "value": "Couldn't save your settings."
+    },
+    {
+      "name": "section_typing_corrections",
+      "value": "Typing corrections"
+    },
+    {
+      "name": "label_auto_capitalization",
+      "value": "Auto-capitalization"
+    },
+    {
+      "name": "summary_auto_capitalization",
+      "value": "Capitalize words based on the current input context"
+    },
+    {
+      "name": "label_double_space_period",
+      "value": "Double-space period"
+    },
+    {
+      "name": "summary_double_space_period",
+      "value": "Tapping twice on spacebar inserts a period followed by a space"
+    },
+    {
+      "name": "error_setting_save_failed",
+      "value": "Could not save this setting."
+    },
+    {
+      "name": "group_theme_mode",
+      "value": "Theme mode"
+    },
+    {
+      "name": "theme_summary_follow_system",
+      "value": "Switch between Floris Day and Floris Night with the system"
+    },
+    {
+      "name": "theme_summary_always_day",
+      "value": "Always use Floris Day"
+    },
+    {
+      "name": "theme_summary_always_night",
+      "value": "Always use Floris Night"
+    },
+    {
+      "name": "theme_save_error",
+      "value": "Could not save the theme mode."
+    },
+    {
+      "name": "group_subtypes",
+      "value": "Subtypes"
+    },
+    {
+      "name": "subtype_name_english",
+      "value": "English"
+    },
+    {
+      "name": "layout_qwerty",
+      "value": "QWERTY"
+    },
+    {
+      "name": "layout_qwertz",
+      "value": "QWERTZ"
+    },
+    {
+      "name": "layout_azerty",
+      "value": "AZERTY"
+    },
+    {
+      "name": "localization_save_failed",
+      "value": "Could not save the layout."
+    },
+    {
+      "name": "about__version_title",
+      "value": "Version"
+    },
+    {
+      "name": "about__license_title",
+      "value": "Project license"
+    },
+    {
+      "name": "about__license_summary",
+      "value": "FlorisBoard is licensed under Apache-2.0"
+    },
+    {
+      "name": "about__repository_title",
+      "value": "Repository (GitHub)"
+    },
+    {
+      "name": "about__repository_value",
+      "value": "https://github.com/florisboard/florisboard"
+    },
+    {
+      "name": "about__port_title",
+      "value": "FlorisBoard for OpenHarmony"
+    },
+    {
+      "name": "ime_enter_go",
+      "value": "Go"
+    },
+    {
+      "name": "ime_enter_search",
+      "value": "Search"
+    },
+    {
+      "name": "ime_enter_send",
+      "value": "Send"
+    },
+    {
+      "name": "ime_enter_next",
+      "value": "Next"
+    },
+    {
+      "name": "ime_enter_done",
+      "value": "Done"
+    },
+    {
+      "name": "ime_enter_prev",
+      "value": "Prev"
+    },
+    {
+      "name": "about_version_unknown",
+      "value": "Unknown"
     }
   ]
 }

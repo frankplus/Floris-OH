@@ -1,88 +1,117 @@
 # FlorisBoard for OpenHarmony
 
-A port of [FlorisBoard](https://github.com/florisboard/florisboard) — the free,
-open-source Android keyboard — to **OpenHarmony / HarmonyOS** as a native ArkTS
-input method. Verified on a Volla X23 running OHOS 6.1.
+A port of [FlorisBoard](https://github.com/florisboard/florisboard), the free,
+open-source Android keyboard, to **OpenHarmony** as a native ArkTS input method,
+with FlorisBoard's settings app.
 
-FlorisBoard's UI is Kotlin/Jetpack-Compose and cannot run on OHOS, so the keyboard
-**UI and input logic are re-implemented in ArkTS/ArkUI**, while the **keyboard data is
-reused directly from upstream FlorisBoard**: the layouts, the long-press accent
-mappings (`en.json`), the symbol popups, the currency set, and the Floris Day / Night
-theme colors all come from the original project (see `tools/convert-layouts.js`).
+FlorisBoard's UI is Kotlin/Jetpack Compose and cannot run on OpenHarmony, so the
+keyboard and the settings app are re-implemented in ArkTS/ArkUI, while the
+keyboard data comes directly from upstream FlorisBoard: the layouts, the
+long-press accent mappings (`en.json`), the symbol popups, the currency set, the
+Floris Day / Night theme colours and the launcher icon (see `tools/`).
 
 ## What works
 
-- **QWERTY + symbols (`?123`) + symbols² (`=\<`) + numeric** layers, assembled from
-  FlorisBoard's own layout JSON (the `characters` + `charactersMod` merge, etc.).
-- **Shift state machine**: one-shot manual shift, double-tap → CAPS LOCK, auto-reset
-  after a character.
-- **Auto-capitalization** at sentence start (best-effort, from cursor context).
-- **Text commit** via the OHOS `InputClient` (insert / backspace / cursor).
-- **Action-aware Enter** — labels itself Go / Search / Send / Done / ⏎ from the focused
-  field's `enterKeyType`, and performs the matching editor action (or inserts a newline).
-- **Long-press accent popups** (e.g. `a → æ ã å ā à á â ä`) from FlorisBoard's `en.json`,
-  case-aware, rendered as an in-panel overlay.
-- **Backspace auto-repeat** (hold to repeat), **double-space → ". "**.
-- **Floris Day / Night theme**, following the system light/dark setting.
-- **Per-editor-session reset** (re-shows letters + re-evaluates auto-cap on a new field).
-- **Gesture-dock clearance** — the panel is grown by `Metrics.gestureBarInset` (28 vp)
-  and padded by the same amount at the bottom, so the last key row sits above the
-  system gesture-navigation bar instead of under it.
-- A **host setup screen** to enable/choose the keyboard and test typing.
+The keyboard:
+
+- **QWERTY, QWERTZ and AZERTY** character layers, plus **symbols (`?123`)**,
+  **symbols² (`=\<`)** and **numeric**, assembled from FlorisBoard's own layout
+  JSON. The space bar names the active layout, as FlorisBoard's does.
+- **Shift**: one-shot shift, double-tap for caps lock, reset after a character.
+- **Auto-capitalisation** at the start of a sentence, **double-space period**.
+- **Action-aware Enter**: Go / Search / Send / Done / ⏎ from the focused field.
+- **Long-press accent popups** (e.g. `a → æ ã å ā à á â ä`) from FlorisBoard's `en.json`.
+- **Backspace auto-repeat**, **haptic feedback** per key.
+- **Floris Day / Night** themes, following the system or forced.
+- Clearance for the system's gesture-navigation bar.
+
+The settings app (FlorisBoard's settings screens, limited to what the keyboard
+can apply):
+
+| Screen | Settings |
+|---|---|
+| Home | whether FlorisBoard is enabled, a button to the system's input-method picker, a field to try it |
+| Keyboard | number row, hint symbols, font size, keyboard height |
+| Input feedback | haptic feedback and its duration |
+| Typing | auto-capitalisation, double-space period |
+| Theme | follow the system, always Floris Day, always Floris Night |
+| Languages & layouts | English: QWERTY, QWERTZ or AZERTY |
+| About | version, licence, upstream project |
+
+The settings live in one Preferences file. The input method runs in its own
+process and reads the file again each time its panel shows.
+
+## Not ported (yet)
+
+Word suggestions and the smartbar, glide typing, spell checking, dictionaries,
+clipboard history, the emoji panel, gestures (swipe on space/delete), one-handed
+mode, the theme editor, backup and restore, languages other than English, sound
+feedback and physical keyboards.
 
 ## Architecture
 
-One HAP, two parts (see `entry/src/main/ets/`):
+One HAP, two parts (`entry/src/main/ets/`):
 
 | Part | Files |
 |---|---|
-| **IME extension** (`InputMethodExtensionAbility`) | `inputmethodability/InputMethodService.ets`, `model/KeyboardController.ets` (panel) |
-| **Live text commit** (AppStorage singleton) | `inputmethodability/model/InputHandler.ets` |
-| **Keyboard panel page** (`@Entry`, state machine) | `inputmethodability/pages/KeyboardPage.ets` |
-| **Key component** (touch / long-press / repeat) | `components/KeyButton.ets` |
-| **Data model / loader / theme** | `model/KeyModels.ets`, `model/LayoutStore.ets`, `model/Theme.ets` |
-| **Host setup screen** | `pages/Index.ets` |
+| Input method (`InputMethodExtensionAbility`) | `inputmethodability/InputMethodService.ets`, `inputmethodability/model/KeyboardController.ets` |
+| Keyboard panel | `inputmethodability/pages/KeyboardPage.ets`, `components/KeyButton.ets` |
+| How the keyboard applies the settings | `inputmethodability/model/KeyboardSettingsLogic.ets`, `SettingsBridge.ets` |
+| Text commit | `inputmethodability/model/InputHandler.ets` |
+| Layouts, key model, keyboard themes | `model/LayoutStore.ets`, `model/KeyModels.ets`, `model/Theme.ets` |
+| Settings store (both processes) | `model/SettingsStore.ets`, `model/KeyboardPrefs.ets` |
+| Settings app | `pages/Index.ets` (navigation host), `screens/*.ets`, `kit/Kit.ets`, `theme/Theme.ets` |
 
-The keyboard registers in `module.json5` as an `extensionAbilities` entry of
-`type: "inputMethod"` with the `ohos.extension.input_method` metadata pointing at
-`resources/base/profile/input_method_config.json` (the subtype profile). The panel page
-is also listed in the `pages` profile.
+## Build · install · use
 
-## Regenerate the layout data
-
-The bundled layouts in `entry/src/main/resources/rawfile/layouts/` are produced from a
-local FlorisBoard checkout:
+The repository carries no signing material. Before the first build, run
+`oniro-app sign --bootstrap` to generate development keys; it fills
+`signingConfigs` in `build-profile.json5` and writes the keys to `signatures/`
+(git-ignored). Keep that local change to `build-profile.json5` out of commits.
 
 ```bash
-# expects FlorisBoard at /home/mrfrank/Download/florisboard
-node tools/convert-layouts.js
-```
-
-It merges each main layout with its `*Mod` row (reproducing FlorisBoard's
-`LayoutManager.mergeLayouts`), resolves the `$`-discriminated selectors, attaches the
-`en.json` accent popups, and substitutes the currency-slot placeholders.
-
-## Build · deploy · use
-
-```bash
-oniro-app sign          # once, generates dev signing config
 oniro-app build
-oniro-app app apply      # install (auto-resolves the bundle from app.json5)
-oniro-app app launch     # open the host setup screen
-# In the app: tap "Enable / Choose Keyboard" → pick FlorisBoard → tap a field to type.
+oniro-app app install    # on the connected device or emulator
+oniro-app app launch     # opens the settings app
 ```
 
-After re-installing, run `hdc shell "aa force-stop dev.patrickgold.florisboard"` so the
-persistent IME process reloads the new code.
+In the app, tap the button that opens the input-method picker and choose
+FlorisBoard. After reinstalling, run `hdc shell aa force-stop dev.patrickgold.florisboard`
+so the input method's process loads the new code.
 
-## Known limitations / future work
+The unit tests are under `entry/src/ohosTest`.
 
-- No word suggestions / glide typing / spell-check (FlorisBoard's native NLP isn't ported).
-- No clipboard manager, emoji panel, or theme editor.
-- English (US) only so far — adding a layout is a `convert-layouts.js` entry plus a
-  subtype in `input_method_config.json`.
-- The system edge-back gesture can intercept taps on the very edge keys (a device-level
-  behavior); a production build should request IMF exclusion of the panel region.
+## Regenerate the data
 
-Upstream FlorisBoard is Apache-2.0; this port keeps the same license for the reused data.
-# Floris-OH
+- Layouts: `node tools/convert-layouts.js` with a FlorisBoard checkout. It merges
+  each layout with its `*Mod` row (FlorisBoard's `LayoutManager.mergeLayouts`),
+  resolves the `$`-selectors, attaches the `en.json` accent popups and fills the
+  currency slots.
+- Icon: `tools/icon/make-icon.js` renders FlorisBoard's adaptive-icon vector
+  drawable into the layered-icon PNGs (see its header).
+
+## Releasing
+
+Releases go to the [Oniro App Store](https://store.iparo.app) from GitHub Actions
+([`.github/workflows/oniro-store.yml`](.github/workflows/oniro-store.yml)). The
+shared [`oniro-app-store-actions`](https://github.com/eclipse-oniro4openharmony/oniro-app-store-actions)
+workflow builds the HAP from the tagged commit, attaches it to a GitHub release
+and registers it with the store, which marks it *Built from source*.
+
+1. Raise `versionCode` (and `versionName`) in `AppScope/app.json5`; the store
+   accepts only a higher `versionCode` than the last published one.
+2. Commit and push to `main`.
+3. Tag and push: `git tag v1.1.1 && git push origin v1.1.1`.
+
+## How it was made
+
+The keyboard was ported by hand. The settings app was then added by an
+automated app factory, continuing this repository: it read FlorisBoard's
+settings screens, wrote a specification (`.factory/appspec.json`), had coding
+agents implement it, and checked the result on devices with the keyboard as the
+current input method (typing, the number row, the layout switch, settings
+surviving a restart).
+
+## Licence
+
+Apache-2.0, like upstream FlorisBoard, whose data and icon this port reuses.

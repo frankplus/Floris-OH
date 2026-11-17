@@ -1,0 +1,1081 @@
+{
+  "name": "FlorisBoard",
+  "bundle": "dev.patrickgold.florisboard",
+  "label": "FlorisBoard",
+  "summary": "Continues Floris-OH, the hand-written FlorisBoard input method for OpenHarmony, with FlorisBoard's settings app limited to what the OpenHarmony keyboard can apply: a Home screen (the base's setup page: IME status, the system input-method picker, a field to try the keyboard, and a row per settings screen), Keyboard (number row, hint symbols, font size, keyboard height), Sounds & Vibration (haptic feedback on/off and duration), Typing (auto-capitalization, double-space period), Theme (follow system, always day, always night), Languages & Layouts (English with QWERTY, QWERTZ or AZERTY) and About. All settings live in one Preferences file shared by the app and the input method process; the keyboard reloads it every time its panel shows and applies every setting, names the active layout on the space bar ('English (QWERTZ)') and gives every key an id so flows can type with it.",
+  "design": {
+    "brand": "#4CAF50",
+    "brandDark": "#66BB6A",
+    "navigation": "a settings home with grouped rows (chevrons) that push each settings screen on a stack; Sounds & Vibration is pushed from a row on Keyboard; the system Back key and the app bar arrow go back",
+    "tone": "FlorisBoard's own wording: plain, short, sentence case for summaries, title case kept where FlorisBoard uses it (Languages & Layouts, Sounds & Vibration), no exclamation marks"
+  },
+  "screens": [
+    {
+      "name": "Home",
+      "title": "Welcome to FlorisBoard",
+      "purpose": "FlorisBoard's settings home merged with the base's setup page: a status card saying whether FlorisBoard is enabled and selected as the input method, a button that opens the system's input-method picker, a text field to try the keyboard in, and one row per settings screen (Languages & Layouts, Theme, Keyboard, Typing, About) in FlorisBoard's order. No back arrow in the app bar.",
+      "home": true,
+      "minContentNodes": 8,
+      "mustShow": [
+        "id=ime_status",
+        "id=choose_keyboard",
+        "id=preview_field",
+        "id=open_localization",
+        "id=open_theme",
+        "id=open_keyboard",
+        "id=open_typing",
+        "id=open_about"
+      ],
+      "ux": {
+        "primaryAction": "choose the keyboard: a filled button 'Choose keyboard' (id choose_keyboard) under the status card, which opens the system input-method picker and refreshes the status when the picker closes",
+        "error": "the status card (id ime_status) shows FlorisBoard's texts: when FlorisBoard is not enabled, 'FlorisBoard is not enabled in the system and thus won't be available as an input method in the input picker. Click here to resolve this issue.' in the error style; when enabled but not the current input method, 'FlorisBoard is not selected as the default input method. Click here to resolve this issue.' in the warning style; when it is the current one, 'FlorisBoard is enabled and selected.'; tapping the card opens the picker too; if the input-method list cannot be read the card says 'Could not read the input method list.'"
+      },
+      "source": {
+        "component": "HomeScreen",
+        "files": [
+          "app/src/main/kotlin/dev/patrickgold/florisboard/app/settings/HomeScreen.kt",
+          "app/src/main/kotlin/dev/patrickgold/florisboard/lib/util/InputMethodUtils.kt"
+        ],
+        "states": [
+          "home"
+        ]
+      }
+    },
+    {
+      "name": "Keyboard",
+      "title": "Keyboard",
+      "purpose": "The keyboard's look and size: the number row on or off ('Number row', 'Show a number row above the character layout'), hint symbols on the keys on or off ('Hinted symbols'), the font size multiplier (50% to 150%, step 5) and, under the group 'Layout', the keyboard height (50% to 150%, step 5); under the group 'Key press', a row 'Sounds & Vibration' that opens the input feedback screen. Changes are saved at once.",
+      "mustShow": [
+        "id=number_row",
+        "id=hinted_symbols",
+        "id=font_size_slider",
+        "id=font_size_value",
+        "id=height_slider",
+        "id=height_value",
+        "id=open_input_feedback"
+      ],
+      "ux": {},
+      "source": {
+        "component": "KeyboardScreen",
+        "files": [
+          "app/src/main/kotlin/dev/patrickgold/florisboard/app/settings/keyboard/KeyboardScreen.kt",
+          "app/src/main/kotlin/dev/patrickgold/florisboard/app/AppPrefs.kt"
+        ],
+        "states": [
+          "keyboard"
+        ]
+      }
+    },
+    {
+      "name": "InputFeedback",
+      "title": "Sounds & Vibration",
+      "purpose": "Haptic feedback, under the group 'Haptic feedback / Vibration': 'Enable haptic feedback' on or off (summary when off: 'Never vibrate for input events, regardless of system settings') and 'Vibration duration' (1 to 100 ms, step 1, shown as '50 ms'), disabled while haptic feedback is off; moving the slider plays one vibration of the chosen length as a preview. No sound feedback.",
+      "mustShow": [
+        "id=haptic_enabled",
+        "id=haptic_duration_slider",
+        "id=haptic_duration_value"
+      ],
+      "ux": {},
+      "source": {
+        "component": "InputFeedbackScreen",
+        "files": [
+          "app/src/main/kotlin/dev/patrickgold/florisboard/app/settings/keyboard/InputFeedbackScreen.kt"
+        ],
+        "states": [
+          "input_feedback"
+        ]
+      }
+    },
+    {
+      "name": "Typing",
+      "title": "Typing",
+      "purpose": "Typing corrections: 'Auto-capitalization' ('Capitalize words based on the current input context') and 'Double-space period' ('Tapping twice on spacebar inserts a period followed by a space'), each a switch, saved at once.",
+      "mustShow": [
+        "id=auto_capitalization",
+        "id=double_space_period"
+      ],
+      "ux": {},
+      "source": {
+        "component": "TypingScreen",
+        "files": [
+          "app/src/main/kotlin/dev/patrickgold/florisboard/app/settings/typing/TypingScreen.kt"
+        ],
+        "states": [
+          "typing"
+        ]
+      }
+    },
+    {
+      "name": "Theme",
+      "title": "Theme",
+      "purpose": "The keyboard's theme mode, under 'Theme mode': one radio row each for 'Follow system', 'Always day' and 'Always night' (Floris Day and Floris Night named in the summaries); the choice is saved at once.",
+      "mustShow": [
+        "id=theme_mode_follow_system",
+        "id=theme_mode_always_day",
+        "id=theme_mode_always_night"
+      ],
+      "ux": {},
+      "source": {
+        "component": "ThemeScreen",
+        "files": [
+          "app/src/main/kotlin/dev/patrickgold/florisboard/app/settings/theme/ThemeScreen.kt"
+        ],
+        "states": [
+          "theme"
+        ]
+      }
+    },
+    {
+      "name": "Localization",
+      "title": "Languages & Layouts",
+      "purpose": "FlorisBoard's localization screen reduced to one subtype: under the group 'Subtypes', the subtype English, and below it the characters layout to use, one radio row each for QWERTY, QWERTZ and AZERTY; the summary of the subtype row reads 'English (QWERTY)' with the chosen layout. Saved at once.",
+      "mustShow": [
+        "id=subtype_english",
+        "id=layout_qwerty",
+        "id=layout_qwertz",
+        "id=layout_azerty"
+      ],
+      "ux": {},
+      "source": {
+        "component": "LocalizationScreen",
+        "files": [
+          "app/src/main/kotlin/dev/patrickgold/florisboard/app/settings/localization/LocalizationScreen.kt",
+          "app/src/main/assets/ime/keyboard/org.florisboard.layouts/extension.json"
+        ],
+        "states": [
+          "localization"
+        ]
+      }
+    },
+    {
+      "name": "About",
+      "title": "About",
+      "purpose": "What the app is: the app icon and name FlorisBoard, the version (the bundle's versionName, read with bundleManager), 'Project license' with 'FlorisBoard is licensed under Apache-2.0', 'Repository (GitHub)' with https://github.com/florisboard/florisboard, and 'FlorisBoard for OpenHarmony' naming this port. Rows only show text.",
+      "mustShow": [
+        "id=about_app_name",
+        "id=about_version",
+        "id=about_license",
+        "id=about_repository",
+        "id=about_port"
+      ],
+      "ux": {},
+      "source": {
+        "component": "AboutScreen",
+        "files": [
+          "app/src/main/kotlin/dev/patrickgold/florisboard/app/settings/about/AboutScreen.kt"
+        ],
+        "states": [
+          "about"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "from": "Home",
+      "to": "Localization",
+      "trigger": "id=open_localization"
+    },
+    {
+      "from": "Home",
+      "to": "Theme",
+      "trigger": "id=open_theme"
+    },
+    {
+      "from": "Home",
+      "to": "Keyboard",
+      "trigger": "id=open_keyboard"
+    },
+    {
+      "from": "Home",
+      "to": "Typing",
+      "trigger": "id=open_typing"
+    },
+    {
+      "from": "Home",
+      "to": "About",
+      "trigger": "id=open_about"
+    },
+    {
+      "from": "Keyboard",
+      "to": "InputFeedback",
+      "trigger": "id=open_input_feedback"
+    }
+  ],
+  "entities": [
+    {
+      "name": "KeyboardPrefs",
+      "fields": [
+        {
+          "name": "numberRow",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "name": "hintedSymbols",
+          "type": "boolean",
+          "default": true
+        },
+        {
+          "name": "fontSizePercent",
+          "type": "number",
+          "default": 100
+        },
+        {
+          "name": "heightPercent",
+          "type": "number",
+          "default": 100
+        },
+        {
+          "name": "hapticEnabled",
+          "type": "boolean",
+          "default": true
+        },
+        {
+          "name": "hapticDurationMs",
+          "type": "number",
+          "default": 50
+        },
+        {
+          "name": "autoCapitalization",
+          "type": "boolean",
+          "default": true
+        },
+        {
+          "name": "doubleSpacePeriod",
+          "type": "boolean",
+          "default": true
+        },
+        {
+          "name": "themeMode",
+          "type": "string",
+          "default": "follow_system"
+        },
+        {
+          "name": "layout",
+          "type": "string",
+          "default": "qwerty"
+        }
+      ],
+      "persistence": "preferences"
+    }
+  ],
+  "fPoints": [
+    {
+      "id": "F1",
+      "screen": "Home",
+      "description": "Typing h and i in the empty field gives Hi: auto-capitalization is on by default and the keys carry their ids.",
+      "steps": [
+        {
+          "action": "click",
+          "selector": "id=preview_field",
+          "waitMs": 1500
+        },
+        {
+          "action": "wait",
+          "selector": "id=key_h"
+        },
+        {
+          "action": "click",
+          "selector": "id=key_h"
+        },
+        {
+          "action": "click",
+          "selector": "id=key_i",
+          "waitMs": 500
+        },
+        {
+          "action": "wait",
+          "selector": "id=preview_field,text=Hi"
+        }
+      ]
+    },
+    {
+      "id": "F2",
+      "screen": "Home",
+      "description": "By default the space bar names the QWERTY layout and the top row shows its number hints.",
+      "steps": [
+        {
+          "action": "click",
+          "selector": "id=preview_field",
+          "waitMs": 1500
+        },
+        {
+          "action": "wait",
+          "selector": "id=key_space"
+        },
+        {
+          "action": "wait",
+          "selector": "text=English (QWERTY)"
+        },
+        {
+          "action": "wait",
+          "selector": "id=hint_q"
+        }
+      ]
+    },
+    {
+      "id": "F3",
+      "screen": "Typing",
+      "description": "With auto-capitalization off, typing h and i in the empty field gives hi.",
+      "steps": [
+        {
+          "action": "click",
+          "selector": "id=auto_capitalization",
+          "expect": "id=auto_capitalization,checked=false"
+        },
+        {
+          "action": "keyEvent",
+          "key": "Back",
+          "expect": "id=preview_field"
+        },
+        {
+          "action": "click",
+          "selector": "id=preview_field",
+          "waitMs": 1500
+        },
+        {
+          "action": "wait",
+          "selector": "id=key_h"
+        },
+        {
+          "action": "click",
+          "selector": "id=key_h"
+        },
+        {
+          "action": "click",
+          "selector": "id=key_i",
+          "waitMs": 500
+        },
+        {
+          "action": "wait",
+          "selector": "id=preview_field,text=hi"
+        }
+      ]
+    },
+    {
+      "id": "F4",
+      "screen": "Keyboard",
+      "description": "With the number row on, key_1 is on the keyboard, tapping it types 1, and the letter row loses its number hints.",
+      "steps": [
+        {
+          "action": "click",
+          "selector": "id=number_row",
+          "expect": "id=number_row,checked=true"
+        },
+        {
+          "action": "keyEvent",
+          "key": "Back",
+          "expect": "id=preview_field"
+        },
+        {
+          "action": "click",
+          "selector": "id=preview_field",
+          "waitMs": 1500
+        },
+        {
+          "action": "wait",
+          "selector": "id=key_1"
+        },
+        {
+          "action": "wait",
+          "selector": "id=hint_q",
+          "gone": true
+        },
+        {
+          "action": "click",
+          "selector": "id=key_1",
+          "waitMs": 500
+        },
+        {
+          "action": "wait",
+          "selector": "id=preview_field,text=1"
+        }
+      ]
+    },
+    {
+      "id": "F5",
+      "screen": "Keyboard",
+      "description": "With hinted symbols off, the keys show no corner hints.",
+      "steps": [
+        {
+          "action": "click",
+          "selector": "id=hinted_symbols",
+          "expect": "id=hinted_symbols,checked=false"
+        },
+        {
+          "action": "keyEvent",
+          "key": "Back",
+          "expect": "id=preview_field"
+        },
+        {
+          "action": "click",
+          "selector": "id=preview_field",
+          "waitMs": 1500
+        },
+        {
+          "action": "wait",
+          "selector": "id=key_q"
+        },
+        {
+          "action": "wait",
+          "selector": "id=hint_q",
+          "gone": true
+        }
+      ]
+    },
+    {
+      "id": "F6",
+      "screen": "Localization",
+      "description": "With QWERTZ chosen, the space bar names QWERTZ.",
+      "steps": [
+        {
+          "action": "click",
+          "selector": "id=layout_qwertz",
+          "expect": "id=layout_qwertz,checked=true"
+        },
+        {
+          "action": "keyEvent",
+          "key": "Back",
+          "expect": "id=preview_field"
+        },
+        {
+          "action": "click",
+          "selector": "id=preview_field",
+          "waitMs": 1500
+        },
+        {
+          "action": "wait",
+          "selector": "id=key_space"
+        },
+        {
+          "action": "wait",
+          "selector": "text=English (QWERTZ)"
+        }
+      ]
+    },
+    {
+      "id": "F7",
+      "screen": "Localization",
+      "description": "With AZERTY chosen, the space bar names AZERTY and the a key still types.",
+      "steps": [
+        {
+          "action": "click",
+          "selector": "id=layout_azerty",
+          "expect": "id=layout_azerty,checked=true"
+        },
+        {
+          "action": "keyEvent",
+          "key": "Back",
+          "expect": "id=preview_field"
+        },
+        {
+          "action": "click",
+          "selector": "id=preview_field",
+          "waitMs": 1500
+        },
+        {
+          "action": "wait",
+          "selector": "text=English (AZERTY)"
+        },
+        {
+          "action": "click",
+          "selector": "id=key_a",
+          "waitMs": 500
+        },
+        {
+          "action": "wait",
+          "selector": "id=preview_field,text=A"
+        }
+      ]
+    },
+    {
+      "id": "F8",
+      "screen": "Keyboard",
+      "description": "The Keyboard settings start at FlorisBoard's defaults: number row off, hinted symbols on, font size and height 100%.",
+      "steps": [
+        {
+          "action": "wait",
+          "selector": "id=number_row,checked=false"
+        },
+        {
+          "action": "wait",
+          "selector": "id=hinted_symbols,checked=true"
+        },
+        {
+          "action": "wait",
+          "selector": "id=font_size_value,text=100%"
+        },
+        {
+          "action": "wait",
+          "selector": "id=height_value,text=100%"
+        }
+      ]
+    },
+    {
+      "id": "F9",
+      "screen": "Keyboard",
+      "description": "The number row setting survives a restart of the app.",
+      "steps": [
+        {
+          "action": "click",
+          "selector": "id=number_row",
+          "expect": "id=number_row,checked=true"
+        },
+        {
+          "action": "relaunch"
+        },
+        {
+          "action": "click",
+          "selector": "id=open_keyboard"
+        },
+        {
+          "action": "wait",
+          "selector": "id=number_row,checked=true"
+        }
+      ]
+    },
+    {
+      "id": "F10",
+      "screen": "Localization",
+      "description": "The chosen layout survives a restart of the app and the subtype row names it.",
+      "steps": [
+        {
+          "action": "wait",
+          "selector": "id=layout_qwerty,checked=true"
+        },
+        {
+          "action": "click",
+          "selector": "id=layout_qwertz",
+          "expect": "id=layout_qwertz,checked=true"
+        },
+        {
+          "action": "relaunch"
+        },
+        {
+          "action": "click",
+          "selector": "id=open_localization"
+        },
+        {
+          "action": "wait",
+          "selector": "id=layout_qwertz,checked=true"
+        },
+        {
+          "action": "wait",
+          "selector": "text*=English (QWERTZ)"
+        }
+      ]
+    },
+    {
+      "id": "F11",
+      "screen": "Theme",
+      "description": "The theme mode follows the system by default; Always night is selected and survives a restart.",
+      "steps": [
+        {
+          "action": "wait",
+          "selector": "id=theme_mode_follow_system,checked=true"
+        },
+        {
+          "action": "click",
+          "selector": "id=theme_mode_always_night",
+          "expect": "id=theme_mode_always_night,checked=true"
+        },
+        {
+          "action": "relaunch"
+        },
+        {
+          "action": "click",
+          "selector": "id=open_theme"
+        },
+        {
+          "action": "wait",
+          "selector": "id=theme_mode_always_night,checked=true"
+        }
+      ]
+    },
+    {
+      "id": "F12",
+      "screen": "InputFeedback",
+      "description": "Haptic feedback is on with a 50 ms duration by default and can be turned off.",
+      "steps": [
+        {
+          "action": "wait",
+          "selector": "id=haptic_enabled,checked=true"
+        },
+        {
+          "action": "wait",
+          "selector": "id=haptic_duration_value,text=50 ms"
+        },
+        {
+          "action": "click",
+          "selector": "id=haptic_enabled",
+          "expect": "id=haptic_enabled,checked=false"
+        }
+      ]
+    },
+    {
+      "id": "F13",
+      "screen": "Typing",
+      "description": "Auto-capitalization and double-space period are on by default; double-space period can be turned off and stays off after a restart.",
+      "steps": [
+        {
+          "action": "wait",
+          "selector": "id=auto_capitalization,checked=true"
+        },
+        {
+          "action": "wait",
+          "selector": "id=double_space_period,checked=true"
+        },
+        {
+          "action": "click",
+          "selector": "id=double_space_period",
+          "expect": "id=double_space_period,checked=false"
+        },
+        {
+          "action": "relaunch"
+        },
+        {
+          "action": "click",
+          "selector": "id=open_typing"
+        },
+        {
+          "action": "wait",
+          "selector": "id=double_space_period,checked=false"
+        }
+      ]
+    },
+    {
+      "id": "F14",
+      "screen": "About",
+      "description": "About names the app and its licence.",
+      "steps": [
+        {
+          "action": "wait",
+          "selector": "id=about_app_name,text=FlorisBoard"
+        },
+        {
+          "action": "wait",
+          "selector": "text*=Apache-2.0"
+        },
+        {
+          "action": "wait",
+          "selector": "text*=github.com/florisboard/florisboard"
+        }
+      ]
+    }
+  ],
+  "constraints": [
+    "ArkUI state management V2 only (@ComponentV2, @Local, @Param, @Event, @ObservedV2/@Trace) in the new screens and in the store; the base's keyboard files (KeyboardPage, KeyButton) are V1 (@Component, @State, @Prop) and stay V1 where the feature item does not need to change that: do not mix V1 and V2 decorators in one component.",
+    "All settings are persisted with @ohos.data.preferences in ONE file named 'florisboard_settings', with FlorisBoard's own preference keys (keyboard__number_row, keyboard__hinted_symbols_enabled, keyboard__font_size_multiplier_portrait, keyboard__height_factor_portrait, input_feedback__haptic_enabled, input_feedback__haptic_vibration_duration, correction__auto_capitalization, correction__double_space_period, theme__mode, localization__layout); every write is followed by flush() so the other process can read it.",
+    "The input method (InputMethodService, an InputMethodExtensionAbility) runs in its own process where EntryAbility does not run: it opens the store itself with SettingsStore.getInstance().init(this.context) in onCreate, and calls SettingsStore.getInstance().reload() each time its panel shows (Preferences caches per process; reload drops the cache with preferences.removePreferencesFromCacheSync and reads the file again).",
+    "The base's input method keeps working exactly as before: QWERTY + symbols + symbols2 + numeric layers, shift and caps lock, auto-capitalization, action-aware Enter, long-press accent popups, backspace auto-repeat, double-space period, haptic tick, Floris Day / Night colours from model/Theme.ets, the gesture-bar inset. Its files stay at their paths (inputmethodability/, components/KeyButton.ets, model/KeyModels.ets, model/LayoutStore.ets, model/Theme.ets, resources/rawfile/layouts/).",
+    "Every key of the keyboard carries an id: character keys key_<lowercase output> for letters and digits (key_q, key_h, key_1; the id does not change when shift shows the uppercase label), other character keys key_code_<code>; special keys key_shift, key_delete, key_enter, key_space, key_symbols (the ?123 view key), key_symbols2, key_characters (the ABC view key), key_numeric, key_lang. Ghost filler columns get no id. The id is set on the KeyButton's outermost node, the one that receives the touch. A key's corner hint Text has the id hint_<lowercase output> (hint_q).",
+    "Switch settings are ArkUI Toggle (type Switch) and choices are Radio components; the element id is set on the Toggle or Radio itself, so the selector id=number_row,checked=true reads its state, and tapping it changes the setting. Tapping the row's label does the same.",
+    "Sliders show their current value in a separate Text with its own id (font_size_value '100%', height_value '100%', haptic_duration_value '50 ms').",
+    "The Home screen's 'Choose keyboard' opens the system picker with inputMethod.getSetting().showOptionalInputMethods(); the status line reads inputMethod.getSetting().getInputMethods(true) (enabled) and inputMethod.getCurrentInputMethod() (selected), compared with the bundle name dev.patrickgold.florisboard; no flow depends on that system dialog.",
+    "No network access, no new permissions: the base's ohos.permission.VIBRATE stays declared for the haptic feedback.",
+    "Out of the port (capabilities none or excluded by the brief): suggestions and smartbar, glide typing, spell checking (FlorisSpellCheckerService), dictionaries and the UserDictionaryEntry table, clipboard history and ClipboardFileInfo, the emoji panel, gestures, one-handed mode, the theme editor and theme manager, backup and restore, physical keyboard, language packs and subtype editor, sound feedback, the crash dialog (CrashDialogActivity), the SEND share target (FlorisCopyToClipboardActivity) and notifications.",
+    "Floris Day and Floris Night are the base's colours in model/Theme.ets, used only by the keyboard; the app's screens use the factory's design system with FlorisBoard's green accent #4CAF50 and follow the system's light/dark mode.",
+    "Visual facts kept from FlorisBoard: the settings screens are lists of preference rows with a title and a one-line summary under it, grouped under small group headers (Layout, Key press, Haptic feedback / Vibration); the home has no back arrow."
+  ],
+  "stores": [
+    {
+      "name": "SettingsStore",
+      "purpose": "Keeps the keyboard settings (one KeyboardPrefs) in the Preferences file 'florisboard_settings' under FlorisBoard's keys, shared by the app's process and the input method's process; loaded in init, written and flushed by every setter, re-read from storage by reload.",
+      "methods": [
+        {
+          "name": "prefs",
+          "params": [],
+          "returns": "KeyboardPrefs",
+          "does": "Returns the one in-memory KeyboardPrefs instance loaded by init (defaults for keys not stored yet). Always the same object: setters and reload update its @Trace fields in place, so screens bound to it refresh."
+        },
+        {
+          "name": "reload",
+          "params": [],
+          "returns": "Promise<KeyboardPrefs>",
+          "does": "Drops this process's cached Preferences instance (preferences.removePreferencesFromCacheSync(context, 'florisboard_settings')), opens the file again, copies every stored value into the prefs() instance (defaults for missing keys) and returns it. The input method calls it each time its panel shows, so changes made in the app apply."
+        },
+        {
+          "name": "setNumberRow",
+          "params": [
+            {
+              "name": "value",
+              "type": "boolean"
+            }
+          ],
+          "returns": "Promise<void>",
+          "does": "Sets numberRow, writes keyboard__number_row and flushes."
+        },
+        {
+          "name": "setHintedSymbols",
+          "params": [
+            {
+              "name": "value",
+              "type": "boolean"
+            }
+          ],
+          "returns": "Promise<void>",
+          "does": "Sets hintedSymbols, writes keyboard__hinted_symbols_enabled and flushes."
+        },
+        {
+          "name": "setFontSizePercent",
+          "params": [
+            {
+              "name": "value",
+              "type": "number"
+            }
+          ],
+          "returns": "Promise<void>",
+          "does": "Rounds to the nearest multiple of 5, clamps to 50..150, sets fontSizePercent, writes keyboard__font_size_multiplier_portrait and flushes."
+        },
+        {
+          "name": "setHeightPercent",
+          "params": [
+            {
+              "name": "value",
+              "type": "number"
+            }
+          ],
+          "returns": "Promise<void>",
+          "does": "Rounds to the nearest multiple of 5, clamps to 50..150, sets heightPercent, writes keyboard__height_factor_portrait and flushes."
+        },
+        {
+          "name": "setHapticEnabled",
+          "params": [
+            {
+              "name": "value",
+              "type": "boolean"
+            }
+          ],
+          "returns": "Promise<void>",
+          "does": "Sets hapticEnabled, writes input_feedback__haptic_enabled and flushes."
+        },
+        {
+          "name": "setHapticDurationMs",
+          "params": [
+            {
+              "name": "value",
+              "type": "number"
+            }
+          ],
+          "returns": "Promise<void>",
+          "does": "Rounds to an integer, clamps to 1..100, sets hapticDurationMs, writes input_feedback__haptic_vibration_duration and flushes."
+        },
+        {
+          "name": "setAutoCapitalization",
+          "params": [
+            {
+              "name": "value",
+              "type": "boolean"
+            }
+          ],
+          "returns": "Promise<void>",
+          "does": "Sets autoCapitalization, writes correction__auto_capitalization and flushes."
+        },
+        {
+          "name": "setDoubleSpacePeriod",
+          "params": [
+            {
+              "name": "value",
+              "type": "boolean"
+            }
+          ],
+          "returns": "Promise<void>",
+          "does": "Sets doubleSpacePeriod, writes correction__double_space_period and flushes."
+        },
+        {
+          "name": "setThemeMode",
+          "params": [
+            {
+              "name": "mode",
+              "type": "string"
+            }
+          ],
+          "returns": "Promise<void>",
+          "does": "Sets themeMode when mode is one of themeModes() ('follow_system', 'always_day', 'always_night'), writes theme__mode and flushes; an unknown mode is ignored."
+        },
+        {
+          "name": "setLayout",
+          "params": [
+            {
+              "name": "layout",
+              "type": "string"
+            }
+          ],
+          "returns": "Promise<void>",
+          "does": "Sets layout when it is one of layouts() ('qwerty', 'qwertz', 'azerty'), writes localization__layout and flushes; an unknown layout is ignored."
+        },
+        {
+          "name": "themeModes",
+          "params": [],
+          "returns": "string[]",
+          "does": "Returns ['follow_system', 'always_day', 'always_night'] in this order (the Theme screen's rows)."
+        },
+        {
+          "name": "themeModeName",
+          "params": [
+            {
+              "name": "mode",
+              "type": "string"
+            }
+          ],
+          "returns": "Resource",
+          "does": "The label of a theme mode from the string resources: 'Follow system', 'Always day', 'Always night'; an unknown mode gives 'Follow system'."
+        },
+        {
+          "name": "layouts",
+          "params": [],
+          "returns": "string[]",
+          "does": "Returns ['qwerty', 'qwertz', 'azerty'] in this order (the Languages & Layouts rows)."
+        },
+        {
+          "name": "layoutName",
+          "params": [
+            {
+              "name": "layout",
+              "type": "string"
+            }
+          ],
+          "returns": "Resource",
+          "does": "The layout's name from the string resources: 'QWERTY', 'QWERTZ', 'AZERTY'; an unknown layout gives 'QWERTY'."
+        },
+        {
+          "name": "spaceBarLabel",
+          "params": [
+            {
+              "name": "layout",
+              "type": "string"
+            }
+          ],
+          "returns": "Resource",
+          "does": "The subtype name FlorisBoard shows on the space bar and in the subtype row: 'English (QWERTY)', 'English (QWERTZ)', 'English (AZERTY)'; an unknown layout gives 'English (QWERTY)'."
+        },
+        {
+          "name": "layoutFile",
+          "params": [
+            {
+              "name": "layout",
+              "type": "string"
+            }
+          ],
+          "returns": "string",
+          "does": "The rawfile base name under layouts/ of the characters layer for a layout: 'characters' for qwerty (the base's file), 'characters_qwertz', 'characters_azerty'; an unknown layout gives 'characters'."
+        },
+        {
+          "name": "percentText",
+          "params": [
+            {
+              "name": "value",
+              "type": "number"
+            }
+          ],
+          "returns": "string",
+          "does": "Formats a percentage for the slider value labels: 100 gives '100%'."
+        },
+        {
+          "name": "durationText",
+          "params": [
+            {
+              "name": "ms",
+              "type": "number"
+            }
+          ],
+          "returns": "string",
+          "does": "Formats a vibration duration: 50 gives '50 ms'."
+        }
+      ]
+    }
+  ],
+  "workItems": [
+    {
+      "id": "feature:Layouts",
+      "kind": "feature",
+      "title": "QWERTZ, AZERTY and number row layout data",
+      "description": "Write the new keyboard data in the base's rawfile format (LayoutDef from model/KeyModels.ets: name, rows of keys with code, label, kind, weight, popups, hint), produced like the base's characters.json by extending tools/convert-layouts.js: characters_qwertz.json from FlorisBoard's layouts/characters/qwertz.json and characters_azerty.json from layouts/characters/azerty.json (app/src/main/assets/ime/keyboard/org.florisboard.layouts/), each merged with the same charactersMod row as the base's characters.json (shift, delete, ?123 view key, space, enter, with the same kinds, weights and targets), with the en.json accent popups and the number hints on the top row where FlorisBoard's popup mapping gives them, 4 rows like the base's; and number_row.json, one row of the ten keys 1 2 3 4 5 6 7 8 9 0 (kind char, weight 1) from FlorisBoard's layouts/numeric_row/western_arabic.json with its popups. Keep the base's characters.json, symbols.json, symbols2.json and numeric.json unchanged. The JSON files must be valid and load with LayoutStore.load.",
+      "ownedPaths": [
+        "entry/src/main/resources/rawfile/layouts/characters_qwertz.json",
+        "entry/src/main/resources/rawfile/layouts/characters_azerty.json",
+        "entry/src/main/resources/rawfile/layouts/number_row.json",
+        "tools/convert-layouts.js"
+      ]
+    },
+    {
+      "id": "feature:KeyboardSettings",
+      "kind": "feature",
+      "title": "The keyboard obeys the settings",
+      "description": "Make the base's input method read and apply SettingsStore. In InputMethodService.onCreate call SettingsStore.getInstance().init(this.context) before keyboardController.onCreate. Each time the panel shows (Panel.on('show') and InputHandler.onInputStart) call await SettingsStore.getInstance().reload(), then resize the panel and bump an AppStorage counter that KeyboardPage watches to re-apply: (1) layout: load the characters layer from SettingsStore.layoutFile(prefs.layout) via LayoutStore.load (LayoutStore's cache must key by file name, and loading a missing file falls back to 'characters'); (2) number row: when prefs.numberRow is on, the characters layer gets the row of layouts/number_row.json above its letter rows and the top letter row loses its digit hints; KeyboardController.panelHeight uses 5 rows instead of Metrics.visibleRows when the number row is on; (3) height: panelHeight multiplies the key rows' height by prefs.heightPercent / 100 (keep the clamp and the gesture-bar inset); (4) font size: every key font size and hint size multiplied by prefs.fontSizePercent / 100; (5) hinted symbols off: no corner hints; (6) haptics: KeyButton vibrates only when prefs.hapticEnabled, for prefs.hapticDurationMs ms instead of the fixed 16 (pass both as props from KeyboardPage); (7) auto-capitalization: evalAutoCap does nothing and shift stays unshifted when prefs.autoCapitalization is off; (8) double-space period: handleSpace only turns two spaces into '. ' when prefs.doubleSpacePeriod is on; (9) theme: 'always_day' uses FlorisLight, 'always_night' FlorisDark, 'follow_system' the existing dark-mode media query; (10) the space bar label is the string of SettingsStore.spaceBarLabel(prefs.layout) resolved with the resourceManager ('English (QWERTY)'). Give every key an id as the constraints say (key_q, key_1, key_shift, key_space, key_enter, key_delete, key_symbols, key_characters, ...; set on KeyButton's outermost node through a new keyId prop, none on ghost columns) and the hint Text the id hint_<char>. Everything the keyboard does today keeps working (shift and caps lock, accents, backspace repeat, Enter actions, per-session reset, gesture-bar inset).",
+      "fPoints": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7"
+      ],
+      "ownedPaths": [
+        "entry/src/main/ets/inputmethodability/**",
+        "entry/src/main/ets/components/KeyButton.ets",
+        "entry/src/main/ets/model/LayoutStore.ets",
+        "entry/src/main/ets/model/KeyModels.ets",
+        "entry/src/main/ets/model/Theme.ets"
+      ],
+      "dependsOn": [
+        "feature:Layouts"
+      ]
+    },
+    {
+      "id": "data:Model",
+      "kind": "data",
+      "title": "Data layer",
+      "description": "Write the data layer behind its contract: entry/src/main/ets/model/SettingsStore.ets already declare every method the screens call (the app spec's Data layer section), each with a stub body marked TODO(factory). Write every body, and init, which opens what the store keeps (the entry ability awaits it once before the first page; make a second call a no-op). Add private fields, helpers and more files in model/ as you need. Keep every signature exactly as generated: the screens are being written against them at the same time, and the merge is checked for each one. When storage fails, log the error with hilog and rethrow it: a method never resolves as if it had worked (an empty list for a database that did not open, an add that saved nothing), because the screens catch the rejection and show the spec's error states. init may log a failure and return (the entry ability opens the first page either way); a method called on a store whose storage did not open rejects. The entity classes (model/KeyboardPrefs.ets) are yours to extend; keep their Data interface, toJSON and fromJSON in step with the fields. A method that returns a ResourceColor gives a colour that belongs to the data (a category's): add each colour to resources/base/element/color.json and resources/dark/element/color.json under a name that starts with the store's, and return $r('app.color.<name>'). A method that returns a Resource gives a text the screens show as it is: add each text to resources/base/element/string.json under a name that starts with the store's, and return $r('app.string.<name>') (a value inside the text is an argument: \"Filter: %s\" and $r('app.string.<name>', summary)). Write no text a user reads in English in the data layer, not even where the contract returns a string (a formatted date, a label inside a longer value): take it from the resources with the context init received, this.context.resourceManager.getStringByNameSync('<name>', ...args), and a count with getIntPluralStringByNameSync('<name>', n, n) (plurals in resources/base/element/plural.json); by name, not by $r(…).id: the unit tests run the store inside the test HAP, which numbers the same resources differently, so an id fails there (\"Invalid resource ID\"), and a fallback text in English is the hard-coded string again. Bring unit tests: a hypium suite (a *.test.ets file with a default export, under entry/src/ohosTest/ets/test/model/; expect(x) has assertEqual, assertDeepEquals, assertTrue, assertFalse, assertNull, assertUndefined, assertContain, assertLarger, assertLess, assertClose, assertThrowError and the assertPromise… family; negate one with expect(x).not().assertEqual(y) (there is no assertNotEqual: a test file that does not compile runs no case)) with at least three cases over the operations the screens call (create and read back, update, delete), a case for each rule the spec states (a boundary, an order, a rounding, an unknown id), and persistence: a second store, `const fresh = new <Store>(); await fresh.init(context);`, finds what the first one saved (getInstance() returns the same object, so reading back through it proves nothing about storage). Each case asserts what its name says, and leaves the data as it found it: the suites run against the app's real storage on the device, so delete what a case added in afterEach. The orchestrator runs every suite on the device after the merge, and a failed case comes back to you.\n\nPersistence calls for this app, each compiled with this SDK and run on a device: write from them, they need no lookup.\n```ts\nimport { preferences } from '@kit.ArkData';\nimport type { common } from '@kit.AbilityKit';\n// Preferences (key-value; keep a list as one JSON string). Each entity class in model/ has toJSON (JSON.stringify calls it) and fromJSON\nconst prefs: preferences.Preferences = preferences.getPreferencesSync(context, { name: 'app_prefs' });   // context: common.Context; open once, share the instance\nconst raw = prefs.getSync('items', '[]') as string;\nconst parsed: Object = JSON.parse(raw) as Object;                   // in try/catch: a damaged value is an empty list, not a crash\nconst items: Item[] = Array.isArray(parsed) ? (parsed as ItemData[]).map((d: ItemData) => Item.fromJSON(d)) : [];\nprefs.putSync('items', JSON.stringify(items)); await prefs.flush(); // a value is only on disk after flush()\nprefs.deleteSync('items'); await prefs.flush();\n// The hypium suite (a store needs a context; take it inside beforeAll, and take the application context: RelationalStore refuses the bare getAppContext() with \"Illegal context\")\nimport { beforeAll, describe, expect, it } from '@ohos/hypium';\nimport { abilityDelegatorRegistry } from '@kit.TestKit';\nexport default function storeTest() {\n  describe('Store', () => {\n    let context: common.Context;\n    beforeAll(async () => { context = abilityDelegatorRegistry.getAbilityDelegator().getAppContext().getApplicationContext(); /* open the stores here */ });\n    it('adds_and_reads_back', 0, async () => { expect(rows.length).assertEqual(1); expect(total).assertLarger(3.9); });\n  });\n}\n```",
+      "ownedPaths": [
+        "entry/src/main/ets/model/**",
+        "entry/src/main/ets/common/**",
+        "entry/src/ohosTest/ets/test/model/**"
+      ]
+    },
+    {
+      "id": "screen:Home",
+      "kind": "screen",
+      "title": "Welcome to FlorisBoard screen",
+      "description": "FlorisBoard's settings home merged with the base's setup page: a status card saying whether FlorisBoard is enabled and selected as the input method, a button that opens the system's input-method picker, a text field to try the keyboard in, and one row per settings screen (Languages & Layouts, Theme, Keyboard, Typing, About) in FlorisBoard's order. No back arrow in the app bar. The data layer is being written at the same time as this screen: call the stores by their contract (the app spec's Data layer section) and do not read the files in model/, whose bodies are not written yet. The stores are open before any page shows; load what the screen shows in aboutToAppear and again when the user comes back to it (rule 12).",
+      "screens": [
+        "Home"
+      ],
+      "fPoints": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "F9",
+        "F10",
+        "F11",
+        "F13"
+      ],
+      "ownedPaths": [
+        "entry/src/main/ets/screens/HomePage.ets",
+        "entry/src/main/ets/components/home/**",
+        "entry/src/ohosTest/ets/test/home/**"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "screen:Keyboard",
+      "kind": "screen",
+      "title": "Keyboard screen",
+      "description": "The keyboard's look and size: the number row on or off ('Number row', 'Show a number row above the character layout'), hint symbols on the keys on or off ('Hinted symbols'), the font size multiplier (50% to 150%, step 5) and, under the group 'Layout', the keyboard height (50% to 150%, step 5); under the group 'Key press', a row 'Sounds & Vibration' that opens the input feedback screen. Changes are saved at once. The data layer is being written at the same time as this screen: call the stores by their contract (the app spec's Data layer section) and do not read the files in model/, whose bodies are not written yet. The stores are open before any page shows; load what the screen shows in aboutToAppear and again when the user comes back to it (rule 12).",
+      "screens": [
+        "Keyboard"
+      ],
+      "fPoints": [
+        "F4",
+        "F5",
+        "F8",
+        "F9"
+      ],
+      "ownedPaths": [
+        "entry/src/main/ets/screens/KeyboardPage.ets",
+        "entry/src/main/ets/components/keyboard/**",
+        "entry/src/ohosTest/ets/test/keyboard/**"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "screen:InputFeedback",
+      "kind": "screen",
+      "title": "Sounds & Vibration screen",
+      "description": "Haptic feedback, under the group 'Haptic feedback / Vibration': 'Enable haptic feedback' on or off (summary when off: 'Never vibrate for input events, regardless of system settings') and 'Vibration duration' (1 to 100 ms, step 1, shown as '50 ms'), disabled while haptic feedback is off; moving the slider plays one vibration of the chosen length as a preview. No sound feedback. The data layer is being written at the same time as this screen: call the stores by their contract (the app spec's Data layer section) and do not read the files in model/, whose bodies are not written yet. The stores are open before any page shows; load what the screen shows in aboutToAppear and again when the user comes back to it (rule 12).",
+      "screens": [
+        "InputFeedback"
+      ],
+      "fPoints": [
+        "F12"
+      ],
+      "ownedPaths": [
+        "entry/src/main/ets/screens/InputFeedbackPage.ets",
+        "entry/src/main/ets/components/inputFeedback/**",
+        "entry/src/ohosTest/ets/test/inputFeedback/**"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "screen:Typing",
+      "kind": "screen",
+      "title": "Typing screen",
+      "description": "Typing corrections: 'Auto-capitalization' ('Capitalize words based on the current input context') and 'Double-space period' ('Tapping twice on spacebar inserts a period followed by a space'), each a switch, saved at once. The data layer is being written at the same time as this screen: call the stores by their contract (the app spec's Data layer section) and do not read the files in model/, whose bodies are not written yet. The stores are open before any page shows; load what the screen shows in aboutToAppear and again when the user comes back to it (rule 12).",
+      "screens": [
+        "Typing"
+      ],
+      "fPoints": [
+        "F3",
+        "F13"
+      ],
+      "ownedPaths": [
+        "entry/src/main/ets/screens/TypingPage.ets",
+        "entry/src/main/ets/components/typing/**",
+        "entry/src/ohosTest/ets/test/typing/**"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "screen:Theme",
+      "kind": "screen",
+      "title": "Theme screen",
+      "description": "The keyboard's theme mode, under 'Theme mode': one radio row each for 'Follow system', 'Always day' and 'Always night' (Floris Day and Floris Night named in the summaries); the choice is saved at once. The data layer is being written at the same time as this screen: call the stores by their contract (the app spec's Data layer section) and do not read the files in model/, whose bodies are not written yet. The stores are open before any page shows; load what the screen shows in aboutToAppear and again when the user comes back to it (rule 12).",
+      "screens": [
+        "Theme"
+      ],
+      "fPoints": [
+        "F11"
+      ],
+      "ownedPaths": [
+        "entry/src/main/ets/screens/ThemePage.ets",
+        "entry/src/main/ets/components/theme/**",
+        "entry/src/ohosTest/ets/test/theme/**"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "screen:Localization",
+      "kind": "screen",
+      "title": "Languages & Layouts screen",
+      "description": "FlorisBoard's localization screen reduced to one subtype: under the group 'Subtypes', the subtype English, and below it the characters layout to use, one radio row each for QWERTY, QWERTZ and AZERTY; the summary of the subtype row reads 'English (QWERTY)' with the chosen layout. Saved at once. The data layer is being written at the same time as this screen: call the stores by their contract (the app spec's Data layer section) and do not read the files in model/, whose bodies are not written yet. The stores are open before any page shows; load what the screen shows in aboutToAppear and again when the user comes back to it (rule 12).",
+      "screens": [
+        "Localization"
+      ],
+      "fPoints": [
+        "F6",
+        "F7",
+        "F10"
+      ],
+      "ownedPaths": [
+        "entry/src/main/ets/screens/LocalizationPage.ets",
+        "entry/src/main/ets/components/localization/**",
+        "entry/src/ohosTest/ets/test/localization/**"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "screen:About",
+      "kind": "screen",
+      "title": "About screen",
+      "description": "What the app is: the app icon and name FlorisBoard, the version (the bundle's versionName, read with bundleManager), 'Project license' with 'FlorisBoard is licensed under Apache-2.0', 'Repository (GitHub)' with https://github.com/florisboard/florisboard, and 'FlorisBoard for OpenHarmony' naming this port. Rows only show text. The data layer is being written at the same time as this screen: call the stores by their contract (the app spec's Data layer section) and do not read the files in model/, whose bodies are not written yet. The stores are open before any page shows; load what the screen shows in aboutToAppear and again when the user comes back to it (rule 12).",
+      "screens": [
+        "About"
+      ],
+      "fPoints": [
+        "F14"
+      ],
+      "ownedPaths": [
+        "entry/src/main/ets/screens/AboutPage.ets",
+        "entry/src/main/ets/components/about/**",
+        "entry/src/ohosTest/ets/test/about/**"
+      ],
+      "dependsOn": []
+    }
+  ]
+}

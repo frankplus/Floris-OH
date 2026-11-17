@@ -1,0 +1,14 @@
+# Build the app from source and publish it to the Oniro App Store when a
+# version tag (v*) is pushed. See the "Releasing" section of the README.
+name: Publish to the Oniro App Store
+on:
+  push:
+    tags: ['v*']
+permissions:
+  id-token: write   # proves to the store which repository and commit this is
+  contents: write   # creates the GitHub release that hosts the package
+jobs:
+  publish:
+    uses: eclipse-oniro4openharmony/oniro-app-store-actions/.github/workflows/publish.yml@v1
+    with:
+      app-name: FlorisBoard

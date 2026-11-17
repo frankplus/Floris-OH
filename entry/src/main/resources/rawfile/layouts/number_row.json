@@ -1,0 +1,131 @@
+{
+  "name": "number_row",
+  "rows": [
+    {
+      "keys": [
+        {
+          "code": 49,
+          "label": "1",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "¹",
+            "₁",
+            "⅐",
+            "⅛",
+            "⅑",
+            "⅒",
+            "⅟",
+            "½",
+            "⅓",
+            "¼",
+            "⅕",
+            "⅙"
+          ]
+        },
+        {
+          "code": 50,
+          "label": "2",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "²",
+            "₂",
+            "⅔",
+            "⅖"
+          ]
+        },
+        {
+          "code": 51,
+          "label": "3",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "³",
+            "⅜",
+            "₃",
+            "¾",
+            "⅗"
+          ]
+        },
+        {
+          "code": 52,
+          "label": "4",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "⁴",
+            "₄",
+            "⅘"
+          ]
+        },
+        {
+          "code": 53,
+          "label": "5",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "⁵",
+            "₅",
+            "⅚",
+            "⅝"
+          ]
+        },
+        {
+          "code": 54,
+          "label": "6",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "⁶",
+            "₆"
+          ]
+        },
+        {
+          "code": 55,
+          "label": "7",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "⁷",
+            "₇",
+            "⅞"
+          ]
+        },
+        {
+          "code": 56,
+          "label": "8",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "⁸",
+            "₈"
+          ]
+        },
+        {
+          "code": 57,
+          "label": "9",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "⁹",
+            "₉"
+          ]
+        },
+        {
+          "code": 48,
+          "label": "0",
+          "kind": "char",
+          "weight": 1,
+          "popups": [
+            "⁰",
+            "∅",
+            "ⁿ",
+            "↉",
+            "₀"
+          ]
+        }
+      ]
+    }
+  ]
+}

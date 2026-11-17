@@ -6,11 +6,16 @@
 import inputMethod from '@ohos.inputMethod';
 import inputMethodEngine from '@ohos.inputMethodEngine';
 import mediaquery from '@ohos.mediaquery';
+import resourceManager from '@ohos.resourceManager';
 import { KeyButton } from '../../components/KeyButton';
 import { InputHandler } from '../model/InputHandler';
 import { LayoutStore } from '../../model/LayoutStore';
 import { KeyboardMode, ShiftState, KeyCode, KeyDef, LayoutDef, RowDef, KeyUtils } from '../../model/KeyModels';
-import { ThemeColors, FlorisLight, FlorisDark, Metrics } from '../../model/Theme';
+import { ThemeColors, Metrics } from '../../model/Theme';
+import { SettingsStore } from '../../model/SettingsStore';
+import { KeyboardPrefs } from '../../model/KeyboardPrefs';
+import { KeyboardSettingsLogic } from '../model/KeyboardSettingsLogic';
+import { KeyRow } from './components/KeyRow';
 
 const EMPTY_LAYOUT: LayoutDef = { name: 'empty', rows: [] };
 
@@ -24,22 +29,37 @@ struct KeyboardPage {
   @StorageProp('enterKeyType') enterKeyType: number = 0;
   // Bumped by InputHandler.onInputStart; lets the page reset per editor session.
   @StorageProp('imeSession') @Watch('onNewSession') imeSession: number = 0;
+  // Bumped by SettingsBridge whenever SettingsStore.reload() ran (the panel is
+  // about to show, or a new editor session started), so the page re-applies
+  // whatever changed in the app's Settings screens.
+  @StorageProp('settingsVersion') @Watch('onSettingsChanged') settingsVersion: number = 0;
 
   private layouts: Map<string, LayoutDef> = new Map<string, LayoutDef>();
   private lastShiftTap: number = 0;
   private lastSpaceTap: number = 0;
-  private autoCap: boolean = true;
+  private prefs: KeyboardPrefs = SettingsStore.getInstance().prefs();
   private darkListener: mediaquery.MediaQueryListener | undefined = undefined;
 
   aboutToAppear(): void {
     const rm = getContext(this).resourceManager;
-    const names: string[] = [KeyboardMode.CHARACTERS, KeyboardMode.SYMBOLS, KeyboardMode.SYMBOLS2, KeyboardMode.NUMERIC];
+    const names: string[] = [KeyboardMode.SYMBOLS, KeyboardMode.SYMBOLS2, KeyboardMode.NUMERIC];
     for (const n of names) {
       try {
         this.layouts.set(n, LayoutStore.load(rm, n));
       } catch (e) {
         console.error(`FlorisIME failed to load layout ${n}`);
       }
+    }
+    // Preload the chosen layout's characters layer and the number row.
+    try {
+      LayoutStore.load(rm, SettingsStore.getInstance().layoutFile(this.prefs.layout));
+    } catch (e) {
+      console.error('FlorisIME failed to load the characters layout');
+    }
+    try {
+      LayoutStore.load(rm, 'number_row');
+    } catch (e) {
+      console.error('FlorisIME failed to load the number_row layout');
     }
     // Follow the system light/dark setting (reactive).
     try {
@@ -71,13 +91,46 @@ struct KeyboardPage {
     this.evalAutoCap();
   }
 
+  // SettingsStore.reload() ran (prefs() is the same instance, its fields
+  // already updated in place); re-apply whatever depends on it imperatively,
+  // the rest is simply re-read by the rebuild this @Watch triggers.
+  private onSettingsChanged(): void {
+    this.prefs = SettingsStore.getInstance().prefs();
+    this.evalAutoCap();
+  }
+
   private theme(): ThemeColors {
-    return this.isDark ? FlorisDark : FlorisLight;
+    return KeyboardSettingsLogic.themeFor(this.prefs.themeMode, this.isDark);
   }
 
   private layout(): LayoutDef {
+    if (this.mode === KeyboardMode.CHARACTERS) {
+      return this.charactersLayout();
+    }
     const l: LayoutDef | undefined = this.layouts.get(this.mode);
     return l !== undefined ? l : EMPTY_LAYOUT;
+  }
+
+  // The chosen layout's letter rows, with the number row prepended when on.
+  private charactersLayout(): LayoutDef {
+    const rm = getContext(this).resourceManager;
+    const fileName: string = SettingsStore.getInstance().layoutFile(this.prefs.layout);
+    let base: LayoutDef;
+    try {
+      base = LayoutStore.load(rm, fileName);
+    } catch (e) {
+      return EMPTY_LAYOUT;
+    }
+    if (!this.prefs.numberRow) {
+      return base;
+    }
+    try {
+      const numberRowDef: LayoutDef = LayoutStore.load(rm, 'number_row');
+      return KeyboardSettingsLogic.withNumberRow(base, numberRowDef, true);
+    } catch (e) {
+      console.error('FlorisIME number_row layout unavailable, showing the letter rows only');
+      return base;
+    }
   }
 
   // ---- input state machine ----
@@ -93,7 +146,15 @@ struct KeyboardPage {
   }
 
   private evalAutoCap(): void {
-    if (!this.autoCap || this.mode !== KeyboardMode.CHARACTERS) {
+    if (this.mode !== KeyboardMode.CHARACTERS) {
+      return;
+    }
+    if (!this.prefs.autoCapitalization) {
+      // Auto-capitalization off: never auto-shift, and drop a one-shot that
+      // was in effect before the setting was turned off.
+      if (this.shift === ShiftState.SHIFTED_AUTOMATIC) {
+        this.shift = ShiftState.UNSHIFTED;
+      }
       return;
     }
     if (this.shift === ShiftState.CAPS_LOCK || this.shift === ShiftState.SHIFTED_MANUAL) {
@@ -106,9 +167,8 @@ struct KeyboardPage {
       return;
     }
     const before: string = this.handler().textBeforeCursor(2);
-    const atStart: boolean = before.length === 0;
-    const afterSentence: boolean = /[.!?]\s$/.test(before);
-    this.shift = (atStart || afterSentence) ? ShiftState.SHIFTED_AUTOMATIC : ShiftState.UNSHIFTED;
+    this.shift = KeyboardSettingsLogic.autoCapitalizes(this.prefs.autoCapitalization, before)
+      ? ShiftState.SHIFTED_AUTOMATIC : ShiftState.UNSHIFTED;
   }
 
   private clearAccents(): void {
@@ -176,7 +236,7 @@ struct KeyboardPage {
     const now: number = Date.now();
     const consecutive: boolean = (now - this.lastSpaceTap) < 600;
     const before: string = this.handler().textBeforeCursor(2);
-    if (consecutive && /[^.!?‽\s]\s$/.test(before)) {
+    if (KeyboardSettingsLogic.insertsPeriod(this.prefs.doubleSpacePeriod, consecutive, before)) {
       this.handler().backspace();
       this.handler().insert('. ');
     } else {
@@ -214,124 +274,44 @@ struct KeyboardPage {
     this.accents = up ? popups.map((p: string) => p.toUpperCase()) : popups;
   }
 
-  // ---- per-key view computations ----
+  // ---- per-key view computations (the rest live in components/KeyRow) ----
 
-  // The key a column acts as. Filler columns ('spacer') carry no key of their
-  // own; they hand their area to the nearest real key in the row so the row's
-  // inset edges stay typable.
-  private actsAs(row: RowDef, idx: number): KeyDef {
-    const k: KeyDef = row.keys[idx];
-    if (k.kind !== 'spacer') {
-      return k;
-    }
-    for (let i = idx + 1; i < row.keys.length; i++) {
-      if (row.keys[i].kind !== 'spacer') {
-        return row.keys[i];
+  private spaceBarText(): string {
+    const rm: resourceManager.ResourceManager = getContext(this).resourceManager;
+    try {
+      const res: Resource = SettingsStore.getInstance().spaceBarLabel(this.prefs.layout);
+      return rm.getStringSync(res.id);
+    } catch (e) {
+      try {
+        return rm.getStringByNameSync('settings_store_space_bar_qwerty');
+      } catch (e2) {
+        return '⌨';
       }
-    }
-    for (let i = idx - 1; i >= 0; i--) {
-      if (row.keys[i].kind !== 'spacer') {
-        return row.keys[i];
-      }
-    }
-    return k;
-  }
-
-  private popupsOf(row: RowDef, idx: number): string[] {
-    const p: string[] | undefined = this.actsAs(row, idx).popups;
-    return p !== undefined ? p : [];
-  }
-
-  private displayLabel(key: KeyDef): string {
-    switch (key.kind) {
-      case 'char':
-        return KeyUtils.casedOutput(key, this.shift);
-      case 'shift':
-        // Plain text glyphs only — the filled U+2B06 arrow renders as a blue
-        // emoji tile on this system. One-shot shift is signalled by the keys
-        // going uppercase; caps-lock additionally tints the glyph (keyFg).
-        return this.shift === ShiftState.CAPS_LOCK ? '⇪' : '⇧';
-      case 'delete':
-        return '⌫';
-      case 'enter':
-        return this.enterLabel();
-      case 'space':
-        return 'English';
-      case 'lang':
-        return '🌐';
-      case 'view':
-        return key.label !== undefined ? key.label : '';
-      default:
-        return '';
     }
   }
 
   private enterLabel(): string {
+    let name: string = '';
     switch (this.enterKeyType) {
-      case inputMethodEngine.ENTER_KEY_TYPE_GO: return 'Go';
-      case inputMethodEngine.ENTER_KEY_TYPE_SEARCH: return 'Search';
-      case inputMethodEngine.ENTER_KEY_TYPE_SEND: return 'Send';
-      case inputMethodEngine.ENTER_KEY_TYPE_NEXT: return 'Next';
-      case inputMethodEngine.ENTER_KEY_TYPE_DONE: return 'Done';
-      case inputMethodEngine.ENTER_KEY_TYPE_PREVIOUS: return 'Prev';
+      case inputMethodEngine.ENTER_KEY_TYPE_GO: name = 'ime_enter_go'; break;
+      case inputMethodEngine.ENTER_KEY_TYPE_SEARCH: name = 'ime_enter_search'; break;
+      case inputMethodEngine.ENTER_KEY_TYPE_SEND: name = 'ime_enter_send'; break;
+      case inputMethodEngine.ENTER_KEY_TYPE_NEXT: name = 'ime_enter_next'; break;
+      case inputMethodEngine.ENTER_KEY_TYPE_DONE: name = 'ime_enter_done'; break;
+      case inputMethodEngine.ENTER_KEY_TYPE_PREVIOUS: name = 'ime_enter_prev'; break;
       default: return '⏎';
     }
+    try {
+      return getContext(this).resourceManager.getStringByNameSync(name);
+    } catch (e) {
+      return '⏎';
+    }
   }
 
-  private commitTextFor(key: KeyDef): string {
-    return KeyUtils.casedOutput(key, this.shift);
-  }
-
-  private isSpecial(kind: string): boolean {
-    return kind === 'shift' || kind === 'delete' || kind === 'view' || kind === 'lang';
-  }
-
-  private keyBg(key: KeyDef): string {
-    const t: ThemeColors = this.theme();
-    if (key.kind === 'enter') {
-      return t.enterKeyBackground;
-    }
-    // FlorisBoard Day/Night: every key is `--surface`; only enter is tinted.
-    if (this.isSpecial(key.kind)) {
-      return t.specialKeyBackground;
-    }
-    return t.keyBackground;
-  }
-
-  private keyFg(key: KeyDef): string {
-    const t: ThemeColors = this.theme();
-    if (key.kind === 'enter') {
-      return t.enterKeyForeground;
-    }
-    // Caps-lock recolors the shift glyph to the secondary accent (orange).
-    if (key.kind === 'shift') {
-      return this.shift === ShiftState.CAPS_LOCK ? t.secondary : t.specialKeyForeground;
-    }
-    if (key.kind === 'space') {
-      return t.spaceForeground;
-    }
-    if (this.isSpecial(key.kind)) {
-      return t.specialKeyForeground;
-    }
-    return t.keyForeground;
-  }
-
-  private keyPressedBg(key: KeyDef): string {
-    const t: ThemeColors = this.theme();
-    if (key.kind === 'enter') {
-      return t.enterKeyPressed;
-    }
-    return t.keyPressedBackground;
-  }
-
-  private keyFontSize(key: KeyDef): number {
-    if (key.kind === 'char') {
-      return Metrics.keyFontSize;
-    }
-    if (key.kind === 'space') {
-      return Metrics.spaceFontSize;
-    }
-    return Metrics.specialKeyFontSize;
+  // Part of the ForEach keys: a change of layout or number row rebuilds the
+  // keys, whose action closures and popups were captured for their old key.
+  private layerKey(): string {
+    return `${this.mode}_${this.prefs.layout}_${this.prefs.numberRow}`;
   }
 
   @Builder
@@ -361,35 +341,22 @@ struct KeyboardPage {
       // target, so no strip of the board belongs to nothing (see Metrics).
       Column() {
         ForEach(this.layout().rows, (row: RowDef, r: number) => {
-          Row() {
-            ForEach(row.keys, (key: KeyDef, c: number) => {
-              // The key this column types: itself, or, for the layout's filler
-              // columns, the key it sits next to — so a row's inset edges extend
-              // that key instead of eating the tap.
-              KeyButton({
-                ghost: key.kind === 'spacer',
-                label: this.displayLabel(this.actsAs(row, c)),
-                commitText: this.commitTextFor(this.actsAs(row, c)),
-                bg: this.keyBg(this.actsAs(row, c)),
-                fg: this.keyFg(this.actsAs(row, c)),
-                pressedBg: this.keyPressedBg(this.actsAs(row, c)),
-                fontSize: this.keyFontSize(this.actsAs(row, c)),
-                weight: key.weight,
-                kind: this.actsAs(row, c).kind,
-                hasPopups: this.popupsOf(row, c).length > 0,
-                popups: this.popupsOf(row, c),
-                hint: key.hint !== undefined ? key.hint : '',
-                hintColor: this.theme().hintForeground,
-                onCommit: (text: string) => this.onCommit(text),
-                onAction: () => this.onAction(this.actsAs(row, c)),
-                onDeleteRepeat: () => this.onDeleteRepeat(),
-                onShowAccents: (p: string[]) => this.onShowAccents(p),
-              })
-            }, (key: KeyDef, c: number) => `${this.mode}_${r}_${c}`)
-          }
-          .width('100%')
-          .layoutWeight(1)
-        }, (row: RowDef, r: number) => `${this.mode}_row_${r}`)
+          KeyRow({
+            row: row,
+            rowIndex: r,
+            mode: this.mode,
+            shift: this.shift,
+            prefs: this.prefs,
+            theme: this.theme(),
+            enterLabel: this.enterLabel(),
+            spaceLabel: this.spaceBarText(),
+            layerKey: this.layerKey(),
+            onCommit: (text: string) => this.onCommit(text),
+            onAction: (key: KeyDef) => this.onAction(key),
+            onDeleteRepeat: () => this.onDeleteRepeat(),
+            onShowAccents: (p: string[]) => this.onShowAccents(p),
+          })
+        }, (row: RowDef, r: number) => `${this.layerKey()}_row_${r}`)
       }
       .width('100%')
       .height('100%')
