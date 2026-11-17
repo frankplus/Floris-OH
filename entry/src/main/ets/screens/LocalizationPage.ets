@@ -60,6 +60,7 @@ export struct LocalizationPage {
                     .fontColor(AppColors.textPrimary)
                     .layoutWeight(1)
                   Radio({ value: layoutOption, group: 'layout' })
+                    .radioStyle({ checkedBackgroundColor: AppColors.brand })
                     .checked(this.layout === layoutOption)
                     .id('layout_' + layoutOption)
                     .onChange((isChecked: boolean) => {

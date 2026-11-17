@@ -103,6 +103,8 @@ export struct InputFeedbackPage {
                     .id('haptic_duration_slider')
                     .enabled(this.hapticEnabled)
                     .width('100%')
+                    .selectedColor(AppColors.brand)
+                    .blockColor(AppColors.brand)
                     .onChange((value: number, mode: SliderChangeMode) => { this.onDurationChange(value, mode); })
                 }
                 .width('100%')

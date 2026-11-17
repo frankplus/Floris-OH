@@ -15,17 +15,6 @@ export struct ThemePage {
     this.themeMode = SettingsStore.getInstance().prefs().themeMode;
   }
 
-  async reload(): Promise<void> {
-    try {
-      const prefs = await SettingsStore.getInstance().reload();
-      this.themeMode = prefs.themeMode;
-    } catch (e) {
-      hilog.error(0x0001, 'ThemePage', 'reload failed: %{public}s', JSON.stringify(e));
-      this.errorMessage = $r('app.string.theme_load_error');
-      this.showError = true;
-    }
-  }
-
   async selectMode(mode: string): Promise<void> {
     this.showError = false;
     const previous = this.themeMode;
@@ -64,6 +53,7 @@ export struct ThemePage {
                   .alignItems(HorizontalAlign.Start)
                   .layoutWeight(1)
                   Radio({ value: 'follow_system', group: 'theme_mode' })
+                    .radioStyle({ checkedBackgroundColor: AppColors.brand })
                     .checked(this.themeMode === 'follow_system')
                     .id('theme_mode_follow_system')
                     .onChange((c: boolean) => { if (c) { this.selectMode('follow_system'); } })
@@ -87,6 +77,7 @@ export struct ThemePage {
                   .alignItems(HorizontalAlign.Start)
                   .layoutWeight(1)
                   Radio({ value: 'always_day', group: 'theme_mode' })
+                    .radioStyle({ checkedBackgroundColor: AppColors.brand })
                     .checked(this.themeMode === 'always_day')
                     .id('theme_mode_always_day')
                     .onChange((c: boolean) => { if (c) { this.selectMode('always_day'); } })
@@ -110,6 +101,7 @@ export struct ThemePage {
                   .alignItems(HorizontalAlign.Start)
                   .layoutWeight(1)
                   Radio({ value: 'always_night', group: 'theme_mode' })
+                    .radioStyle({ checkedBackgroundColor: AppColors.brand })
                     .checked(this.themeMode === 'always_night')
                     .id('theme_mode_always_night')
                     .onChange((c: boolean) => { if (c) { this.selectMode('always_night'); } })
@@ -145,7 +137,7 @@ export struct ThemePage {
       .height('100%')
     }
     .hideTitleBar(true)
-    .onShown(() => { this.reload(); })
+    .onShown(() => { this.themeMode = SettingsStore.getInstance().prefs().themeMode; })
     .id('page_Theme')
   }
 }

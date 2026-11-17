@@ -237,10 +237,6 @@
       "value": "Could not save the theme mode."
     },
     {
-      "name": "theme_load_error",
-      "value": "Could not load the theme mode."
-    },
-    {
       "name": "group_subtypes",
       "value": "Subtypes"
     },
@@ -311,6 +307,10 @@
     {
       "name": "ime_enter_prev",
       "value": "Prev"
+    },
+    {
+      "name": "about_version_unknown",
+      "value": "Unknown"
     }
   ]
 }

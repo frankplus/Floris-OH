@@ -72,7 +72,7 @@ export class Metrics {
   static readonly keyFontSize: number = 22;        // key font-size 22sp
   static readonly specialKeyFontSize: number = 18; // view keys (?123/ABC) 18sp
   static readonly spaceFontSize: number = 12;      // space label 12sp
-  static readonly hintFontSize: number = 11;       // corner hint ~12sp
+  static readonly hintFontSize: number = 9;        // corner hint, small enough to clear the label
   static readonly popupFontSize: number = 22;      // popup box 22sp
   // Key shape: each row is sized so a weight-1 key is ~square. The panel height
   // is derived in KeyboardController from the key width × this ratio, so keys

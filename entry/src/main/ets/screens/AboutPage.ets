@@ -10,7 +10,7 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 @ComponentV2
 export struct AboutPage {
   @Consumer('pathStack') pathStack: NavPathStack = new NavPathStack();
-  @Local versionText: string = '';
+  @Local versionText: ResourceStr = '';
 
   aboutToAppear(): void {
     this.loadVersion();
@@ -22,7 +22,7 @@ export struct AboutPage {
       this.versionText = info.versionName;
     } catch (e) {
       hilog.error(0x0001, 'About', 'load version failed: %{public}s', JSON.stringify(e));
-      this.versionText = '0.0.0';
+      this.versionText = $r('app.string.about_version_unknown');
     }
   }
 

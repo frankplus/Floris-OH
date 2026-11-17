@@ -36,6 +36,8 @@ export struct SliderSettingRow {
       Slider({ value: this.value, min: this.min, max: this.max, step: this.step })
         .id(this.sliderId)
         .width('100%')
+        .selectedColor(AppColors.brand)
+        .blockColor(AppColors.brand)
         .onChange((value: number, mode: SliderChangeMode) => {
           this.onLiveChange(value);
           if (mode === SliderChangeMode.End || mode === SliderChangeMode.Click) {

@@ -244,7 +244,7 @@ export struct KeyButton {
             .fontSize(this.hintFontSize)
             .fontColor(this.hintColor)
             .maxLines(1)
-            .padding({ right: 5, top: 3 })
+            .padding({ right: 4, top: 1 })
         }
       }
       .width('100%')
